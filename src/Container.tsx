@@ -16,7 +16,7 @@ import {
 	TModal,
 	TPropsRender
 } from "./types";
-import styles from "../styles/style.module.css";
+import styles from "../assets/css/style.module.css";
 
 
 const Container = forwardRef<TModal, TProps>((props, ref) => {
@@ -27,7 +27,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		name,
 		title,
 		disableClose,
-		theme = 'lite',
+		theme = 'light',
 		effect = 'scale',
 		render,
 		footerRender,
@@ -93,22 +93,23 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			{isShow &&
 				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>
 					<div className={styles['background']} onClick={hide}/>
-					{
-						typeof render === 'function' ? render(renderProps) :
-						<div className={styles['modal'] + (className ? ' ' + className : '')} style={style}>
-							<div className={styles['header']}>
-								<div className={styles['text']}>
-									{title}
+					<div className={styles['modal-container']}>
+						{
+							typeof render === 'function' ? render(renderProps) :
+							<div className={styles['modal'] + (className ? ' ' + className : '')} style={style}>
+								<div className={styles['header']}>
+									<div className={styles['text']}>
+										{title}
+									</div>
+									<div className={styles['close']} onClick={hide}/>
 								</div>
-								<div onClick={hide}>X</div>
+								<div className={styles['content']}>
+									{children}
+								</div>
+								{footerRender && <div className={styles['footer']} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
 							</div>
-							<div className={styles['content']}>
-								{children}
-							</div>
-							{footerRender && <div className={styles['footer']} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
-						</div>
-					}
-					
+						}
+					</div>
 				</div>
 			}
 		</>,

@@ -34,7 +34,7 @@ export type TConfig = {
 	/**
 	 * Modal container theme
 	 */
-	theme?: 'lite' | 'dark';
+	theme?: 'light' | 'dark';
 
 	/**
 	 * Custom render
