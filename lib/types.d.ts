@@ -56,6 +56,7 @@ export interface TProps extends TConfig {
 }
 export type TProvider = {
     children: React.ReactElement;
+    spa?: boolean;
 };
 export type TControl = {
     /**
