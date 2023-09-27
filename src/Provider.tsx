@@ -20,7 +20,7 @@ const ProviderContext = createContext<TContainerContext>({
 	modals: null
 });
 
-const Provider = ({children, spa = false}: TProvider) => {
+const Provider = ({children, SPA = false}: TProvider) => {
 	const modals = useRef<TModals>({});
 	const modalsRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +58,7 @@ const Provider = ({children, spa = false}: TProvider) => {
 		}
 	};
 
-	if (!spa) {
+	if (!SPA) {
 		useImperativeHandle(modalsRef, createDynamicContainer);
 	}
 
@@ -72,7 +72,7 @@ const Provider = ({children, spa = false}: TProvider) => {
 		modals: modalsRef
 	}}>
 		{children}
-		{spa && <div ref={modalsRef}/>}
+		{SPA && <div ref={modalsRef}/>}
 	</ProviderContext.Provider>)
 };
 
