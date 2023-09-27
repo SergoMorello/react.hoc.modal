@@ -1,6 +1,6 @@
 {
   "name": "react-hoc-modal",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React component for easy create modals",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
