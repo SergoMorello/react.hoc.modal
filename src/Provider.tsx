@@ -2,10 +2,8 @@ import {
 	createContext,
 	useImperativeHandle,
 	useRef,
-	createRef,
-	useLayoutEffect
+	createRef
 } from "react";
-import ReactDOM from "react-dom";
 import {
 	TModals,
 	TProvider,
@@ -22,6 +20,7 @@ const ProviderContext = createContext<TContainerContext>({
 
 const Provider = ({children, SPA = false}: TProvider) => {
 	const modals = useRef<TModals>({});
+
 	const modalsRef = useRef<HTMLDivElement>(null);
 
 	const push = (name: string, show: () => void, hide: () => void) => {
@@ -61,6 +60,7 @@ const Provider = ({children, SPA = false}: TProvider) => {
 	if (!SPA) {
 		useImperativeHandle(modalsRef, createDynamicContainer);
 	}
+
 
 	useImperativeHandle(staticAction, () => ({
 		show,

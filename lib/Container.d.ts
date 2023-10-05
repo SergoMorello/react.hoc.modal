@@ -1,4 +1,9 @@
 /// <reference types="react" />
-import { TProps, TModal } from "./types";
-declare const Container: import("react").ForwardRefExoticComponent<TProps & import("react").RefAttributes<TModal>>;
+import { TModal } from "./types";
+declare const Container: import("react").ForwardRefExoticComponent<import("./types").TConfig & {
+    name: string;
+    title: string;
+    children: import("react").ReactElement<any, string | import("react").JSXElementConstructor<any>>;
+    onHide?: (() => void) | undefined;
+} & import("react").RefAttributes<TModal>>;
 export { Container };

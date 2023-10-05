@@ -26,7 +26,9 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		className,
 		name,
 		title,
-		disableClose,
+		disableClose = false,
+		backgroundClose = true,
+		hideCloseButton = false,
 		theme = 'light',
 		effect = 'scale',
 		render,
@@ -45,9 +47,8 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 
 	const _hide = () => {
 		const element = containerRef.current;
-		if (!element) {
-			return;
-		}
+		if (!element) return;
+		
 		element!.ontransitionend = () => {
 			setShow(false);
 		};
@@ -55,17 +56,35 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	};
 
 	const hide = () => {
-		if (disableClose)
-			return;
+		if (disableClose) return;
 		_hide();
 	};
 
+	const backgroundHide = () => {
+		if (!backgroundClose) return;
+		hide();
+	};
+
 	useEffect(() => {
-		requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
-		if (!isShow) {
+		if (isShow) {
+			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
+	 	}else{
 			onHide?.();
 		}
 	},[isShow]);
+
+	/**
+	 * Unset background cursor pointer
+	 */
+	useLayoutEffect(() => {
+		if (!containerRef.current) return;
+		const container = containerRef.current;
+
+		if (backgroundClose)
+			container?.classList.remove(styles['cursor-unset']);
+		else
+			container?.classList.add(styles['cursor-unset']);
+	},[backgroundClose]);
 
 	useLayoutEffect(() => {
 		providerContext.push(name, show, _hide);
@@ -92,8 +111,15 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			<>
 			{isShow &&
 				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>
-					<div className={styles['background']} onClick={hide}/>
+					<div className={styles['background']} onClick={backgroundHide}/>
 					<div className={styles['modal-container']}>
+						{
+							(typeof render === 'function' && !hideCloseButton) &&
+							<div className={styles['close-block']} onClick={backgroundHide}>
+								<div className={styles['close'] + ' ' + styles['large']} onClick={hide}/>
+							</div>
+						}
+						
 						{
 							typeof render === 'function' ? render(renderProps) :
 							<div className={styles['modal'] + (className ? ' ' + className : '')} style={style}>
@@ -101,7 +127,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 									<div className={styles['text']}>
 										{title}
 									</div>
-									<div className={styles['close']} onClick={hide}/>
+									{(!hideCloseButton) && <div className={styles['close']} onClick={hide}/>}
 								</div>
 								<div className={styles['content']}>
 									{children}

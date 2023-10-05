@@ -14,7 +14,17 @@ export type TConfig = {
 	/**
 	 * Switch disabled or enabled close, default false
 	 */
-	disableClose?: boolean | undefined;
+	disableClose?: boolean;
+
+	/**
+	 * If true, click on background close modal (default true)
+	 */
+	backgroundClose?: boolean;
+
+	/**
+	 * If true, hide close button (defaule false)
+	 */
+	hideCloseButton?: boolean;
 
 	/**
 	 * CSS classes
@@ -51,7 +61,7 @@ export type TConfig = {
 	footerRender?: ((props: TPropsRender) => React.ReactElement) | React.ReactElement;
 }
 
-export interface TProps extends TConfig {
+export type TProps = TConfig & {
 
 	name: string;
 
@@ -115,16 +125,15 @@ export type TContainerContext = {
 	modals: RefObject<HTMLDivElement> | null;
 }
 
-export interface TModalConfigAction extends TModal {
+export type TModalConfigAction = TModal & {
 	setConfig: (config: TConfig) => void;
 }
 
-export interface TPropsRender extends TProps, TModal {}
+export type TPropsRender = TProps & TModal & {}
 
-export interface TConfigComponent extends TConfig {
+export type TConfigComponent = TConfig & {
 	/**
 	 * Footer component
 	 */
 	children?: ((props: TModalConfigAction) => React.ReactElement | React.ReactNode) | React.ReactElement | React.ReactNode;
 }
-
