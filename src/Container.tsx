@@ -137,7 +137,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			{isShow &&
 				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>
 					<div className={styles['background']} onClick={backgroundHide}/>
-					<div className={styles['modal-container']} tabIndex={1} role="dialog" onBlur={resetFocus}>
+					<div className={styles['modal-container']} tabIndex={1} role="dialog">
 						{
 							(typeof render === 'function' && !hideCloseButton) &&
 							<div className={styles['close-block']} onClick={backgroundHide}>
