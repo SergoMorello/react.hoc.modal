@@ -1,6 +1,6 @@
 /* Modal */
 body.block-scroll {
-	overflow: hidden;
+	overflow: hidden !important;
 }
 .container {
 	display: flex;
