@@ -1,4 +1,7 @@
 /* Modal */
+body.block-scroll {
+	overflow: hidden;
+}
 .container {
 	display: flex;
 	justify-content: center;
@@ -12,6 +15,10 @@
 	transition: opacity 0.3s;
 	z-index: 999;
 	opacity: 0;
+}
+
+.container::backdrop {
+	opacity: 1;
 }
 
 .container div {
@@ -34,6 +41,10 @@
 
 .modal-container {
 	position: fixed;
+}
+
+.modal-container:focus {
+	outline: 0;
 }
 
 .close-block {

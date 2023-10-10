@@ -67,12 +67,31 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		hide();
 	};
 
+	const blockScroll = (status: boolean) => {
+		if (!document!.body) return;
+		const classBody = document.body.classList;
+		status ? classBody.add(styles['block-scroll']) : classBody.remove(styles['block-scroll']);
+	};
+
+	const handleEscape = (e: KeyboardEvent) => {
+		if (e.code === 'Escape') {
+			hide();
+		}
+	};
+
+	const resetFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+		if (!(e.relatedTarget && e.relatedTarget!.closest('.' + styles['modal-container']))) {
+			e.currentTarget.focus();
+		}
+	};
+
 	useEffect(() => {
 		if (isShow) {
 			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
 	 	}else{
 			onHide?.();
 		}
+		requestAnimationFrame(() => blockScroll(isShow));
 	},[isShow]);
 
 	/**
@@ -90,6 +109,10 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 
 	useLayoutEffect(() => {
 		providerContext.push(name, show, _hide);
+		document.addEventListener('keydown', handleEscape);
+		return () => {
+			document.removeEventListener('keydown', handleEscape);
+		}
 	},[]);
 
 	useImperativeHandle(ref, () => ({
@@ -114,7 +137,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			{isShow &&
 				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>
 					<div className={styles['background']} onClick={backgroundHide}/>
-					<div className={styles['modal-container']}>
+					<div className={styles['modal-container']} tabIndex={1} role="dialog" onBlur={resetFocus}>
 						{
 							(typeof render === 'function' && !hideCloseButton) &&
 							<div className={styles['close-block']} onClick={backgroundHide}>
