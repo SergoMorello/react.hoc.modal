@@ -7,7 +7,9 @@ import {
 	useImperativeHandle,
 	createContext,
 	useState,
-	FC
+	FC,
+	useLayoutEffect,
+	useEffect
 } from "react";
 import Modal from ".";
 import {
@@ -17,7 +19,9 @@ import {
 	TModalConfigAction
 } from "./types";
 
-export interface TwithModal<T> extends ForwardRefExoticComponent<T>,TModal {}
+export interface TwithModal<T> extends ForwardRefExoticComponent<T>,TModal<T> {
+	setState: (data: T) => void;
+}
 
 export const WhithModalContext = createContext<TModalConfigAction>({
 	setConfig: () => {},
@@ -27,7 +31,7 @@ export const WhithModalContext = createContext<TModalConfigAction>({
 });
 
 const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig): TwithModal<T> => {
-	const currentRef = createRef<TModal | null>();
+	const currentRef = createRef<TModal<T> | null>();
 	
 
 	const show = () => {
@@ -38,8 +42,13 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 		currentRef.current?.hide();
 	};
 
-	const container = () => forwardRef<TModal, T>(({...props}, ref): JSX.Element => {
-		const modalRef = useRef<TModal>(null);
+	const setState = (data: T) => {
+		if (typeof currentRef.current!.setState !== 'function') return;
+		currentRef.current!.setState(data);
+	};
+
+	const container = () => forwardRef<TModal<T>, T>(({...props}, ref): JSX.Element => {
+		const modalRef = useRef<TModal<T>>(null);
 		const id = useId();
 		const [currentConfig, _setConfig] = useState<TConfig | undefined>(config);
 
@@ -50,7 +59,14 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 			}));
 		};
 		
-		useImperativeHandle(currentRef, () => modalRef.current);
+		const setState = (data: T) => {
+			props = Object.assign(props, data);
+		};
+		
+		useImperativeHandle(currentRef, () => ({
+			...modalRef.current,
+			setState
+		} as TModal<T>));
 
 		return(<WhithModalContext.Provider value={{
 			setConfig,
@@ -67,7 +83,8 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 	return {
 		...container(),
 		show,
-		hide
+		hide,
+		setState
 	} as TwithModal<T>;
 };
 

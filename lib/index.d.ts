@@ -3,7 +3,7 @@ import { Config } from "./Config";
 import { Provider } from "./Provider";
 import { withModal, TwithModal } from "./withModal";
 import { useModal } from "./useModal";
-import { TProps, TProvider, TModal, TConfigComponent, TConfig, TControl } from "./types";
+import { TProps, TProvider, TModal, TConfigComponent, TConfig, TUseModalControl } from "./types";
 interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttributes<TModal>> {
     /**
      * Provider
@@ -27,7 +27,7 @@ interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttribu
      */
     hide: (name?: string) => void;
     withModal: <T>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig) => TwithModal<T>;
-    useModal: (config: TConfig) => TControl;
+    useModal: (config: TConfig) => TUseModalControl;
 }
 declare const Modal: StaticComponents;
 export { withModal, useModal, Provider as ModalProvider, Config as ModalConfig };

@@ -18,7 +18,7 @@ import {
 	TModal,
 	TConfigComponent,
 	TConfig,
-	TControl
+	TUseModalControl
 } from "./types";
 
 interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttributes<TModal>> {
@@ -49,7 +49,7 @@ interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttribu
 
 	withModal: <T>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig) => TwithModal<T>;
 
-	useModal: (config: TConfig) => TControl;
+	useModal: (config: TConfig) => TUseModalControl;
 }
 
 const Modal: StaticComponents = {

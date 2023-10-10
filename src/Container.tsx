@@ -60,6 +60,8 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		_hide();
 	};
 
+	
+
 	const backgroundHide = () => {
 		if (!backgroundClose) return;
 		hide();

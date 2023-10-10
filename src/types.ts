@@ -97,6 +97,10 @@ export type TControl = {
 	hide: () => void;
 }
 
+export type TUseModalControl = TControl & {
+	setConfig: (config: TConfig) => void;
+}
+
 export type TStaticControl = {
 	/**
 	 * Show modal by name
@@ -112,8 +116,9 @@ export type TStaticControl = {
 	hide: (name?: string) => void;
 }
 
-export type TModal = TControl & {
+export type TModal<T = any> = TControl & {
 	footerRef?: RefObject<HTMLDivElement> | null;
+	setState?: (data: T) => void;
 }
 
 export type TModals = {
