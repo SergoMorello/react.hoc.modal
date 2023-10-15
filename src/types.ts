@@ -97,8 +97,9 @@ export type TControl = {
 	hide: () => void;
 }
 
-export type TUseModalControl = TControl & {
+export type TUseModalControl<TState> = TControl & {
 	setConfig: (config: TConfig) => void;
+	state?: TState;
 }
 
 export type TStaticControl = {
@@ -116,22 +117,32 @@ export type TStaticControl = {
 	hide: (name?: string) => void;
 }
 
-export type TModal<T = any> = TControl & {
+export type TShowStatus = {
+	current: boolean;
+}
+
+export type TModal<TProps = {}, TState = {}> = TControl & {
 	footerRef?: RefObject<HTMLDivElement> | null;
-	setState?: (data: T) => void;
+	setState?: (data: TState) => void;
+}
+
+export type TPushControll = TControl & {
+	showStatus: TShowStatus;
 }
 
 export type TModals = {
-	[name: string]: TModal;
+	[name: string]: TPushControll;
 }
 
 export type TContainerContext = {
-	push(name: string, show: () => void, hide: () => void): void;
+	push(name: string, control: TPushControll): void;
 	modals: RefObject<HTMLDivElement> | null;
+	count: () => number;
 }
 
-export type TModalConfigAction = TModal & {
+export type TModalConfigAction<TState = {}> = TModal & {
 	setConfig: (config: TConfig) => void;
+	state?: TState;
 }
 
 export type TPropsRender = TProps & TModal & {}

@@ -5,11 +5,12 @@ import {
 import { WhithModalContext } from "./withModal";
 import {
 	TUseModalControl,
-	TConfig
+	TConfig,
+	TModalConfigAction
 } from "./types";
 
-const useModal = (config?: TConfig): TUseModalControl => {
-	const {setConfig, show, hide} = useContext(WhithModalContext);
+const useModal = <TState>(config?: TConfig): TUseModalControl<TState> => {
+	const {setConfig, show, hide, state} = useContext<TModalConfigAction<TState>>(WhithModalContext);
 
 	useLayoutEffect(() => {
 		if (config) setConfig(config);
@@ -18,7 +19,8 @@ const useModal = (config?: TConfig): TUseModalControl => {
 	return {
 		show,
 		hide,
-		setConfig
+		setConfig,
+		state
 	};
 };
 

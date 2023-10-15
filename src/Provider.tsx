@@ -8,13 +8,15 @@ import {
 	TModals,
 	TProvider,
 	TContainerContext,
-	TStaticControl
+	TStaticControl,
+	TPushControll
 } from "./types";
 
 const staticAction = createRef<TStaticControl>();
 
 const ProviderContext = createContext<TContainerContext>({
 	push: () => {},
+	count: () => 0,
 	modals: null
 });
 
@@ -23,11 +25,8 @@ const Provider = ({children, SPA = false}: TProvider) => {
 
 	const modalsRef = useRef<HTMLDivElement>(null);
 
-	const push = (name: string, show: () => void, hide: () => void) => {
-		modals.current[name] = {
-			show,
-			hide
-		};
+	const push = (name: string, control: TPushControll) => {
+		modals.current[name] = control;
 	};
 
 	const show = (name: string) => {
@@ -35,13 +34,17 @@ const Provider = ({children, SPA = false}: TProvider) => {
 			modals.current[name].show();
 		}
 	};
-
+	
 	const hide = (name?: string) => {
 		if (name && name in modals.current) {
 			modals.current[name].hide();
 		}else{
 			Object.keys(modals.current).forEach(hide);
 		}
+	};
+
+	const count = (): number => {
+		return Object.values(modals.current).filter((modal) => modal.showStatus.current === true).length;
 	};
 
 	const createDynamicContainer = (): HTMLDivElement => {
@@ -69,7 +72,8 @@ const Provider = ({children, SPA = false}: TProvider) => {
 	
 	return(<ProviderContext.Provider value={{
 		push,
-		modals: modalsRef
+		modals: modalsRef,
+		count
 	}}>
 		{children}
 		{SPA && <div ref={modalsRef}/>}

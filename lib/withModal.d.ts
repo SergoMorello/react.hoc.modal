@@ -1,8 +1,8 @@
 import { ForwardRefExoticComponent, FC } from "react";
 import { TModal, TConfig, TModalConfigAction } from "./types";
-export interface TwithModal<T> extends ForwardRefExoticComponent<T>, TModal<T> {
-    setState: (data: T) => void;
+export interface TwithModal<TProps, TState> extends ForwardRefExoticComponent<TProps>, TModal<TProps, TState> {
+    setState: (data: TState | ((data: TState) => TState)) => TState;
 }
-export declare const WhithModalContext: import("react").Context<TModalConfigAction>;
-declare const withModal: <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig) => TwithModal<T>;
+export declare const WhithModalContext: import("react").Context<TModalConfigAction<any>>;
+declare const withModal: <TProps extends {} = {}, TState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig) => TwithModal<TProps, TState>;
 export { withModal };

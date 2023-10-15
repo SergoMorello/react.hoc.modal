@@ -5,6 +5,9 @@
 ## install
 ```
 npm i react-hoc-modal
+
+// if you use typescript install types
+npm i @types/react@{this you react version} @types/react-dom@{this you react version} -D
 ```
 
 ### Examples
@@ -16,7 +19,7 @@ import Modal from 'react-hoc-modal';
 ...
 root.render(
   <React.StrictMode>
-	<Modal.Provider>
+	<Modal.Provider SPA>
 		<App />
 	</Modal.Provider>
   </React.StrictMode>
@@ -58,4 +61,18 @@ const App = () => {
 #### Use modal component
 ```js
 <button onClick={MyFirstModal.show}>Show my first modal</button>
+```
+
+#### If you need update data without 'props', you can use the 'setState' method.
+```js
+MyFirstModal.setState({testData: 'Hello'});
+```
+
+#### To get data use the 'state' property in the returned 'useModal' hook object.
+```js
+const MyFirstModal = () => {
+	const {state} = Modal.useModal();
+
+	return(<div>{state?.testData}</div>);
+};
 ```

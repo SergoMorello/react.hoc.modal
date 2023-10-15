@@ -7,31 +7,29 @@ import {
 	useImperativeHandle,
 	createContext,
 	useState,
-	FC,
-	useLayoutEffect,
-	useEffect
+	FC
 } from "react";
 import Modal from ".";
 import {
 	TModal,
 	TConfig,
-	TPropsRender,
 	TModalConfigAction
 } from "./types";
 
-export interface TwithModal<T> extends ForwardRefExoticComponent<T>,TModal<T> {
-	setState: (data: T) => void;
+export interface TwithModal<TProps, TState> extends ForwardRefExoticComponent<TProps>,TModal<TProps, TState> {
+	setState: (data: TState | ((data: TState) => TState)) => TState;
 }
 
-export const WhithModalContext = createContext<TModalConfigAction>({
+export const WhithModalContext = createContext<TModalConfigAction<any>>({
 	setConfig: () => {},
+	state: {},
 	footerRef: null,
 	show: () => {},
 	hide: () => {}
 });
 
-const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig): TwithModal<T> => {
-	const currentRef = createRef<TModal<T> | null>();
+const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig): TwithModal<TProps, TState> => {
+	const currentRef = createRef<TModal<TProps> | null>();
 	
 
 	const show = () => {
@@ -42,13 +40,14 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 		currentRef.current?.hide();
 	};
 
-	const setState = (data: T) => {
+	const setState = (data: TState | ((data: TState) => TState)) => {
 		if (typeof currentRef.current!.setState !== 'function') return;
 		currentRef.current!.setState(data);
 	};
 
-	const container = () => forwardRef<TModal<T>, T>(({...props}, ref): JSX.Element => {
-		const modalRef = useRef<TModal<T>>(null);
+	const container = () => forwardRef<TModal<TProps>, TProps>(({...props}, ref): JSX.Element => {
+		const modalRef = useRef<TModal<TProps>>(null);
+		const [stateData, setStateData] = useState<TState>();
 		const id = useId();
 		const [currentConfig, _setConfig] = useState<TConfig | undefined>(config);
 
@@ -59,17 +58,14 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 			}));
 		};
 		
-		const setState = (data: T) => {
-			props = Object.assign(props, data);
-		};
-		
 		useImperativeHandle(currentRef, () => ({
 			...modalRef.current,
-			setState
-		} as TModal<T>));
-
+			setState: setStateData
+		} as TModal<TProps>));
+		
 		return(<WhithModalContext.Provider value={{
 			setConfig,
+			state: stateData,
 			footerRef: modalRef.current?.footerRef,
 			show,
 			hide
@@ -85,7 +81,7 @@ const withModal = <T extends {}>(WrappedComponent: ForwardRefExoticComponent<T> 
 		show,
 		hide,
 		setState
-	} as TwithModal<T>;
+	} as TwithModal<TProps, TState>;
 };
 
 export {withModal};

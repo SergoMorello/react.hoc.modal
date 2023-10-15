@@ -38,6 +38,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	
 	const containerRef = useRef<HTMLDivElement>(null);
 	const footerRef = useRef<HTMLDivElement>(null);
+	const showStatus = useRef(false);
 	const [isShow, setShow] = useState(false);
 	const providerContext = useContext(ProviderContext);
 
@@ -59,9 +60,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		if (disableClose) return;
 		_hide();
 	};
-
 	
-
 	const backgroundHide = () => {
 		if (!backgroundClose) return;
 		hide();
@@ -86,12 +85,18 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	};
 
 	useEffect(() => {
+		showStatus.current = isShow;
+
 		if (isShow) {
 			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
 	 	}else{
 			onHide?.();
 		}
-		requestAnimationFrame(() => blockScroll(isShow));
+
+		requestAnimationFrame(() => {
+			if (!isShow && providerContext.count() > 0 ) return;
+			blockScroll(isShow);
+		});
 	},[isShow]);
 
 	/**
@@ -108,7 +113,11 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	},[backgroundClose]);
 
 	useLayoutEffect(() => {
-		providerContext.push(name, show, _hide);
+		providerContext.push(name, {
+			show,
+			hide: _hide,
+			showStatus
+		});
 		document.addEventListener('keydown', handleEscape);
 		return () => {
 			document.removeEventListener('keydown', handleEscape);

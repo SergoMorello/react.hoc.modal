@@ -26,8 +26,8 @@ interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttribu
      * @returns {void}
      */
     hide: (name?: string) => void;
-    withModal: <T>(WrappedComponent: ForwardRefExoticComponent<T> | FC<T>, config?: TConfig) => TwithModal<T>;
-    useModal: (config: TConfig) => TUseModalControl;
+    withModal: <TProps = {}, TState = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig) => TwithModal<TProps, TState>;
+    useModal: <TState>(config?: TConfig) => TUseModalControl<TState>;
 }
 declare const Modal: StaticComponents;
 export { withModal, useModal, Provider as ModalProvider, Config as ModalConfig };

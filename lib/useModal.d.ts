@@ -1,3 +1,3 @@
 import { TUseModalControl, TConfig } from "./types";
-declare const useModal: (config?: TConfig) => TUseModalControl;
+declare const useModal: <TState>(config?: TConfig) => TUseModalControl<TState>;
 export { useModal };
