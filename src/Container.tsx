@@ -17,7 +17,7 @@ import {
 	TPropsRender
 } from "./types";
 import styles from "../assets/css/style.module.css";
-
+import HTMLViewport from "html-viewport";
 
 const Container = forwardRef<TModal, TProps>((props, ref) => {
 	const {
@@ -87,9 +87,13 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	useEffect(() => {
 		showStatus.current = isShow;
 
+		const viewport = new HTMLViewport;
+
 		if (isShow) {
+			viewport.add('interactive-widget', 'resizes-content');
 			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
 	 	}else{
+			viewport.remove('interactive-widget');
 			onHide?.();
 		}
 
@@ -97,6 +101,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			if (!isShow && providerContext.count() > 0 ) return;
 			blockScroll(isShow);
 		});
+		
 	},[isShow]);
 
 	/**
