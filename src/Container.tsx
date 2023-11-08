@@ -96,13 +96,20 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			viewport.remove('interactive-widget');
 			onHide?.();
 		}
-
+		
 		requestAnimationFrame(() => {
-			if (!isShow && providerContext.count() > 0 ) return;
+			if (!isShow && providerContext.count() > 0) return;
 			blockScroll(isShow);
-		});
+		})
 		
 	},[isShow]);
+
+	useEffect(() => {
+		return () => {
+			showStatus.current = false;
+			blockScroll(false);
+		}
+	}, []);
 
 	/**
 	 * Unset background cursor pointer
