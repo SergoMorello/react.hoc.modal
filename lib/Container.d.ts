@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TModal } from "./types";
+import type { TModal } from "./types";
 declare const Container: import("react").ForwardRefExoticComponent<import("./types").TConfig & {
     name: string;
     title: string;

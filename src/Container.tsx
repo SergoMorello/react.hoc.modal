@@ -7,11 +7,11 @@ import {
 	forwardRef,
 	useImperativeHandle
 } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import {
 	ProviderContext
 } from "./Provider";
-import {
+import type {
 	TProps,
 	TModal,
 	TPropsRender
@@ -153,7 +153,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		footerRef
 	};
 	
-	return ReactDOM.createPortal(
+	return createPortal(
 			<>
 			{isShow &&
 				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>

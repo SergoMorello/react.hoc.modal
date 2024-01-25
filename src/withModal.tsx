@@ -10,7 +10,7 @@ import {
 	FC
 } from "react";
 import Modal from ".";
-import {
+import type {
 	TModal,
 	TConfig,
 	TModalConfigAction

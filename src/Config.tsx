@@ -3,7 +3,7 @@ import {
 	useLayoutEffect,
 	useState
 } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import { WhithModalContext } from "./withModal";
 import { TConfigComponent } from "./types";
 
@@ -26,7 +26,7 @@ const Config = ({children, ...props}: TConfigComponent) => {
 	if ((!withModalContext.footerRef || !withModalContext.footerRef!.current) && !active) {
 		return(null);
 	}
-	return(ReactDOM.createPortal(typeof children === 'function' ? children(withModalContext) : children, withModalContext.footerRef!.current as Element));
+	return(createPortal(typeof children === 'function' ? children(withModalContext) : children, withModalContext.footerRef!.current as Element));
 };
 
 export {Config};

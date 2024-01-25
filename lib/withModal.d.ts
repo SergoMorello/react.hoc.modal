@@ -1,5 +1,5 @@
 import { ForwardRefExoticComponent, FC } from "react";
-import { TModal, TConfig, TModalConfigAction } from "./types";
+import type { TModal, TConfig, TModalConfigAction } from "./types";
 export interface TwithModal<TProps, TState> extends ForwardRefExoticComponent<TProps>, TModal<TProps, TState> {
     setState: (data: TState | ((data: TState) => TState)) => TState;
 }
