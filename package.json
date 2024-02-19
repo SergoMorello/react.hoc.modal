@@ -46,8 +46,8 @@
     "webpack-cli": "^5.1.4"
   },
   "peerDependencies": {
-    "html-viewport": "^0.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "html-viewport": ">=0.0.1",
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   }
 }

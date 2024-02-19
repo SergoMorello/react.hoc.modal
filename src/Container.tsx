@@ -29,6 +29,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		disableClose = false,
 		backgroundClose = true,
 		hideCloseButton = false,
+		stylePrefix = '_modal-',
 		theme = 'light',
 		effect = 'scale',
 		render,
@@ -152,36 +153,50 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		hide,
 		footerRef
 	};
+
+	const Style = (styleOrArray: string | string[]): string => {
+		if (Array.isArray(styleOrArray)) {
+			return styleOrArray.map(Style).join(' ');
+		}else{
+			return stylePrefix + styleOrArray + ' ' + styles[styleOrArray];
+		}
+	};
+
+	const classesRoot = [
+		Style('container')
+	];
+	if (theme) classesRoot.push(theme, styles[theme]);
+	if (effect) classesRoot.push(styles['effect-' + effect]);
 	
 	return createPortal(
 			<>
 			{isShow &&
-				<div className={styles['container'] + ' ' + styles[theme] + ' ' + styles['effect-' + effect]} ref={containerRef}>
-					<div className={styles['background']} onClick={backgroundHide}/>
-					<div className={styles['modal-container']} tabIndex={1} role="dialog">
+				<div className={classesRoot.join(' ')} ref={containerRef}>
+					<div className={Style('background')} onClick={backgroundHide}/>
+					<dialog className={Style('modal-container')} tabIndex={1} role="dialog" open>
 						{
 							(typeof render === 'function' && !hideCloseButton) &&
-							<div className={styles['close-block']} onClick={backgroundHide}>
-								<div className={styles['close'] + ' ' + styles['large']} onClick={hide}/>
+							<div className={Style('close-block')} onClick={backgroundHide}>
+								<div className={Style(['close', 'large'])} onClick={hide}/>
 							</div>
 						}
 						
 						{
 							typeof render === 'function' ? render(renderProps) :
-							<div className={styles['modal'] + (className ? ' ' + className : '')} style={style}>
-								<div className={styles['header']}>
-									<div className={styles['text']}>
+							<div className={Style('modal') + (className ? ' ' + className : '')} style={style}>
+								<div className={Style('header')}>
+									<div className={Style('text')}>
 										{title}
 									</div>
-									{(!hideCloseButton) && <div className={styles['close']} onClick={hide}/>}
+									{(!hideCloseButton) && <div className={Style('close')} onClick={hide}/>}
 								</div>
-								<div className={styles['content']}>
+								<div className={Style('content')}>
 									{children}
 								</div>
-								{footerRender && <div className={styles['footer']} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
+								{footerRender && <div className={Style('footer')} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
 							</div>
 						}
-					</div>
+					</dialog>
 				</div>
 			}
 		</>,

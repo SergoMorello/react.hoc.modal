@@ -36,6 +36,8 @@ export type TConfig = {
 	 */
 	style?: React.CSSProperties;
 
+	stylePrefix?: string;
+
 	/**
 	 * Show and hide effect
 	 */

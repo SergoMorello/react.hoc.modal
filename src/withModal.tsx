@@ -9,7 +9,7 @@ import {
 	useState,
 	FC
 } from "react";
-import Modal from ".";
+import { Container } from "./Container";
 import type {
 	TModal,
 	TConfig,
@@ -70,9 +70,9 @@ const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedCompon
 			show,
 			hide
 		}}>
-			<Modal name={currentConfig?.name ?? id} title={currentConfig?.title ?? ''} {...currentConfig} ref={modalRef}>
+			<Container name={currentConfig?.name ?? id} title={currentConfig?.title ?? ''} {...currentConfig} ref={modalRef}>
 				<WrappedComponent {...props} ref={ref}/>
-			</Modal>
+			</Container>
 		</WhithModalContext.Provider>);
 	});
 

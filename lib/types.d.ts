@@ -28,6 +28,7 @@ export type TConfig = {
      * CSS styles
      */
     style?: React.CSSProperties;
+    stylePrefix?: string;
     /**
      * Show and hide effect
      */
