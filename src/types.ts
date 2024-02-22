@@ -32,10 +32,18 @@ export type TConfig = {
 	className?: string;
 
 	/**
+	 * CSS styles dialog container
+	 */
+	dialogStyle?: React.CSSProperties;
+
+	/**
 	 * CSS styles
 	 */
 	style?: React.CSSProperties;
 
+	/**
+	 * Prefix name static styles
+	 */
 	stylePrefix?: string;
 
 	/**
