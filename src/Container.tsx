@@ -58,13 +58,17 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	};
 
 	const hide = () => {
-		if (disableClose) return;
 		_hide();
 	};
 	
 	const backgroundHide = () => {
 		if (!backgroundClose) return;
 		hide();
+	};
+
+	const modalHide = () => {
+		if (disableClose) return;
+		_hide();
 	};
 
 	const blockScroll = (status: boolean) => {
@@ -177,7 +181,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 						{
 							(typeof render === 'function' && !hideCloseButton) &&
 							<div className={Style('close-block')} onClick={backgroundHide}>
-								<div className={Style(['close', 'large'])} onClick={hide}/>
+								<div className={Style(['close', 'large'])} onClick={modalHide}/>
 							</div>
 						}
 						
@@ -188,7 +192,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 									<div className={Style('text')}>
 										{title}
 									</div>
-									{(!hideCloseButton) && <div className={Style('close')} onClick={hide}/>}
+									{(!hideCloseButton) && <div className={Style('close')} onClick={modalHide}/>}
 								</div>
 								<div className={Style('content')}>
 									{children}
