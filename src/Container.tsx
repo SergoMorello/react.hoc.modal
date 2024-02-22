@@ -60,15 +60,15 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	const hide = () => {
 		_hide();
 	};
-	
-	const backgroundHide = () => {
-		if (!backgroundClose) return;
-		hide();
-	};
 
 	const modalHide = () => {
 		if (disableClose) return;
 		_hide();
+	};
+	
+	const backgroundHide = () => {
+		if (!backgroundClose) return;
+		modalHide();
 	};
 
 	const blockScroll = (status: boolean) => {
@@ -162,7 +162,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		if (Array.isArray(styleOrArray)) {
 			return styleOrArray.map(Style).join(' ');
 		}else{
-			return stylePrefix + styleOrArray + ' ' + styles[styleOrArray];
+			return styles[styleOrArray] + ' ' + stylePrefix + styleOrArray;
 		}
 	};
 
