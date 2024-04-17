@@ -7,7 +7,8 @@ import {
 	useImperativeHandle,
 	createContext,
 	useState,
-	FC
+	FC,
+	useEffect
 } from "react";
 import { Container } from "./Container";
 import type {
@@ -31,7 +32,6 @@ export const WhithModalContext = createContext<TModalConfigAction<any>>({
 const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig): TwithModal<TProps, TState> => {
 	const currentRef = createRef<TModal<TProps> | null>();
 	
-
 	const show = () => {
 		currentRef.current?.show();
 	};
@@ -45,7 +45,7 @@ const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedCompon
 		currentRef.current!.setState(data);
 	};
 
-	const container = () => forwardRef<TModal<TProps>, TProps>(({...props}, ref): JSX.Element => {
+	const container = forwardRef<TModal<TProps>, TProps>(({...props}, ref): JSX.Element => {
 		const modalRef = useRef<TModal<TProps>>(null);
 		const [stateData, setStateData] = useState<TState>();
 		const id = useId();
@@ -57,6 +57,10 @@ const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedCompon
 				...config
 			}));
 		};
+
+		useEffect(() => {
+			_setConfig(config);
+		}, [config]);
 		
 		useImperativeHandle(currentRef, () => ({
 			...modalRef.current,
@@ -77,7 +81,7 @@ const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedCompon
 	});
 
 	return {
-		...container(),
+		...container,
 		show,
 		hide,
 		setState

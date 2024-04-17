@@ -23,6 +23,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	const {
 		children,
 		style,
+		contentStyle,
 		dialogStyle,
 		className,
 		name,
@@ -141,7 +142,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 			document.removeEventListener('keydown', handleEscape);
 		}
 	},[]);
-
+	
 	useImperativeHandle(ref, () => ({
 		show,
 		hide,
@@ -151,7 +152,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 	if (!providerContext.modals || !providerContext.modals!.current) {
 		return(null);
 	}
-
+	
 	const renderProps: TPropsRender = {
 		...props,
 		show,
@@ -195,7 +196,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 									</div>
 									{(!hideCloseButton) && <div className={Style('close')} onClick={modalHide}/>}
 								</div>
-								<div className={Style('content')}>
+								<div className={Style('content')} style={contentStyle}>
 									{children}
 								</div>
 								{footerRender && <div className={Style('footer')} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}

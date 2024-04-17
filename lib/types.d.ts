@@ -33,6 +33,10 @@ export type TConfig = {
      */
     style?: React.CSSProperties;
     /**
+     * CSS styles content container
+     */
+    contentStyle?: React.CSSProperties;
+    /**
      * Prefix name static styles
      */
     stylePrefix?: string;
