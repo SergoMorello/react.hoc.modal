@@ -8,7 +8,9 @@ import {
 	createContext,
 	useState,
 	FC,
-	useEffect
+	useEffect,
+	RefAttributes,
+	ReactNode
 } from "react";
 import { Container } from "./Container";
 import type {
@@ -17,9 +19,9 @@ import type {
 	TModalConfigAction
 } from "./types";
 
-export interface TwithModal<TProps, TState> extends ForwardRefExoticComponent<TProps>,TModal<TProps, TState> {
-	setState: (data: TState | ((data: TState) => TState)) => TState;
-}
+export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefExoticComponent<ModalProps & RefAttributes<any>>, TModal<ModalProps, ModalState> {
+	setState: (data: ModalState | ((data: ModalState) => ModalState)) => void;
+};
 
 export const WhithModalContext = createContext<TModalConfigAction<any>>({
 	setConfig: () => {},
@@ -29,8 +31,8 @@ export const WhithModalContext = createContext<TModalConfigAction<any>>({
 	hide: () => {}
 });
 
-const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig): TwithModal<TProps, TState> => {
-	const currentRef = createRef<TModal<TProps> | null>();
+const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<ModalProps> | FC<ModalProps>, config?: TConfig): WithModalComponent<ModalProps, ModalState> => {
+	const currentRef = createRef<TModal<ModalProps> | null>();
 	
 	const show = () => {
 		currentRef.current?.show();
@@ -40,52 +42,50 @@ const withModal = <TProps extends {} = {}, TState extends {} = {}>(WrappedCompon
 		currentRef.current?.hide();
 	};
 
-	const setState = (data: TState | ((data: TState) => TState)) => {
+	const setState = (data: ModalState | ((data: ModalState) => ModalState)) => {
 		if (typeof currentRef.current!.setState !== 'function') return;
 		currentRef.current!.setState(data);
 	};
 
-	const container = forwardRef<TModal<TProps>, TProps>(({...props}, ref): JSX.Element => {
-		const modalRef = useRef<TModal<TProps>>(null);
-		const [stateData, setStateData] = useState<TState>();
-		const id = useId();
-		const [currentConfig, _setConfig] = useState<TConfig | undefined>(config);
-
-		const setConfig = (config: TConfig) => {
-			_setConfig((currentConfig) => ({
-				...currentConfig,
-				...config
-			}));
-		};
-
-		useEffect(() => {
-			_setConfig(config);
-		}, [config]);
-		
-		useImperativeHandle(currentRef, () => ({
-			...modalRef.current,
-			setState: setStateData
-		} as TModal<TProps>));
-		
-		return(<WhithModalContext.Provider value={{
-			setConfig,
-			state: stateData,
-			footerRef: modalRef.current?.footerRef,
-			show,
-			hide
-		}}>
-			<Container name={currentConfig?.name ?? id} title={currentConfig?.title ?? ''} {...currentConfig} ref={modalRef}>
-				<WrappedComponent {...props} ref={ref}/>
-			</Container>
-		</WhithModalContext.Provider>);
-	});
-
 	return {
-		...container,
+		...forwardRef<TModal<ModalProps>, ModalProps>(({...props}, ref): JSX.Element => {
+			const modalRef = useRef<TModal<ModalProps>>(null);
+			const [stateData, setStateData] = useState<ModalState>();
+			const id = useId();
+			const [currentConfig, _setConfig] = useState<TConfig | undefined>(config);
+
+			const setConfig = (config: TConfig) => {
+				_setConfig((currentConfig) => ({
+					...currentConfig,
+					...config
+				}));
+			};
+
+			useEffect(() => {
+				_setConfig(config);
+			}, [config]);
+			
+			useImperativeHandle(currentRef, () => ({
+				...modalRef.current,
+				setState: setStateData
+			} as TModal<ModalProps>));
+			
+			return(<WhithModalContext.Provider value={{
+				setConfig,
+				state: stateData,
+				footerRef: modalRef.current?.footerRef,
+				show,
+				hide
+			}}>
+				<Container name={currentConfig?.name ?? id} title={currentConfig?.title ?? ''} {...currentConfig} ref={modalRef}>
+					<WrappedComponent {...props} ref={ref}/>
+				</Container>
+			</WhithModalContext.Provider>);
+		}),
 		show,
 		hide,
 		setState
-	} as TwithModal<TProps, TState>;
+	} as WithModalComponent<ModalProps, ModalState>;
 };
 
 export {withModal};

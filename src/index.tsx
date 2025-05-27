@@ -1,8 +1,8 @@
 import {
-	ForwardRefExoticComponent,
-	RefAttributes,
+	type ForwardRefExoticComponent,
+	type RefAttributes,
 	forwardRef,
-	FC
+	type FC
 } from "react";
 import { Container } from "./Container";
 import { Config } from "./Config";
@@ -10,10 +10,12 @@ import {
 	Provider,
 	staticAction
 } from "./Provider";
-import { withModal, TwithModal } from "./withModal";
+import { withModal,
+	type WithModalComponent
+} from "./withModal";
 import { useModal } from "./useModal";
 import {
-	TProps,
+	ModalProps,
 	TProvider,
 	TModal,
 	TConfigComponent,
@@ -21,7 +23,7 @@ import {
 	TUseModalControl
 } from "./types";
 
-interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttributes<TModal>> {
+interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAttributes<TModal>> {
 	/**
 	 * Provider
 	 */
@@ -47,20 +49,19 @@ interface StaticComponents extends ForwardRefExoticComponent<TProps & RefAttribu
 	 */
 	hide: (name?: string) => void;
 
-	withModal: <TProps = {}, TState = {}>(WrappedComponent: ForwardRefExoticComponent<TProps> | FC<TProps>, config?: TConfig) => TwithModal<TProps, TState>;
+	withModal: <ModalProps = {}, ModalState = {}>(WrappedComponent: ForwardRefExoticComponent<ModalProps> | FC<ModalProps>, config?: TConfig) => WithModalComponent<ModalProps, ModalState>;
 
-	useModal: <TState>(config?: TConfig) => TUseModalControl<TState>;
+	useModal: <ModalState>(config?: TConfig) => TUseModalControl<ModalState>;
 }
 
 const Modal: StaticComponents = {
-	...forwardRef<TModal, TProps>(({...args}, ref): JSX.Element => <Container {...args} ref={ref}/>),
+	...forwardRef<TModal, ModalProps>(({...args}, ref): JSX.Element => <Container {...args} ref={ref}/>),
 	Provider,
 	Config,
 	show: (name: string) => staticAction.current!.show(name),
 	hide: (name?: string) => staticAction.current!.hide(name),
 	withModal,
 	useModal
-
 } as StaticComponents;
 
 export {

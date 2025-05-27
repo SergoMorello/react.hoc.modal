@@ -5,27 +5,33 @@ import {
 	useRef,
 	useState,
 	forwardRef,
-	useImperativeHandle
+	useImperativeHandle,
+	useMemo
 } from "react";
 import { createPortal } from "react-dom";
 import {
 	ProviderContext
 } from "./Provider";
 import type {
-	TProps,
+	ModalProps,
 	TModal,
 	TPropsRender
 } from "./types";
 import styles from "../assets/css/style.module.css";
 import HTMLViewport from "html-viewport";
+import { Style } from "./helpers";
+import Modal from "./Modals/Modal";
+import BottomSheet from "./Modals/BottomSheet";
 
-const Container = forwardRef<TModal, TProps>((props, ref) => {
+const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const {
 		children,
 		style,
 		contentStyle,
 		dialogStyle,
 		className,
+		bottomSheet,
+		bottomSheetMaxWidth,
 		name,
 		title,
 		disableClose = false,
@@ -148,6 +154,15 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		hide,
 		footerRef
 	}));
+
+	const classesRoot = useMemo(() => {
+		const classesRoot = [
+			Style('container')
+		];
+		if (theme) classesRoot.push(theme, styles[theme]);
+		if (effect) classesRoot.push(styles['effect-' + effect]);
+		return classesRoot;
+	}, [theme, effect]);
 	
 	if (!providerContext.modals || !providerContext.modals!.current) {
 		return(null);
@@ -160,26 +175,34 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 		footerRef
 	};
 
-	const Style = (styleOrArray: string | string[]): string => {
-		if (Array.isArray(styleOrArray)) {
-			return styleOrArray.map(Style).join(' ');
-		}else{
-			return styles[styleOrArray] + ' ' + stylePrefix + styleOrArray;
-		}
-	};
-
-	const classesRoot = [
-		Style('container')
-	];
-	if (theme) classesRoot.push(theme, styles[theme]);
-	if (effect) classesRoot.push(styles['effect-' + effect]);
+	// const classesRoot = [
+	// 	Style('container')
+	// ];
+	// if (theme) classesRoot.push(theme, styles[theme]);
+	// if (effect) classesRoot.push(styles['effect-' + effect]);
 	
 	return createPortal(
 			<>
 			{isShow &&
 				<div className={classesRoot.join(' ')} ref={containerRef}>
 					<div className={Style('background')} onClick={backgroundHide}/>
-					<dialog className={Style('modal-container')} tabIndex={1} role="dialog" style={dialogStyle} open>
+					{
+						bottomSheet ? 
+						<BottomSheet
+							{...props}
+							onBackground={backgroundHide}
+							onClose={modalHide}
+							renderProps={renderProps}
+						/> :
+						<Modal
+							{...props}
+							onBackground={backgroundHide}
+							onClose={modalHide}
+							renderProps={renderProps}
+						/>
+					}
+					
+					{/* <dialog className={Style('modal-container')} tabIndex={1} role="dialog" style={dialogStyle} open>
 						{
 							(typeof render === 'function' && !hideCloseButton) &&
 							<div className={Style('close-block')} onClick={backgroundHide}>
@@ -202,7 +225,7 @@ const Container = forwardRef<TModal, TProps>((props, ref) => {
 								{footerRender && <div className={Style('footer')} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
 							</div>
 						}
-					</dialog>
+					</dialog> */}
 				</div>
 			}
 		</>,

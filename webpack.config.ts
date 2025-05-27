@@ -1,11 +1,12 @@
-const path = require('path');
+import type { Configuration } from 'webpack';
+import path from 'path';
 
-module.exports = {
+const config: Configuration = {
   entry: {
-	index: '/src/index.tsx'
+	index: path.resolve(__dirname, 'src/index.tsx')
   },
   target: 'web',
-  mode: 'production', //production | development
+  mode: 'production',
   devtool: "source-map",
   module: {
     rules: [
@@ -44,16 +45,30 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
-	library: 'Modal',
+	clean: true,
+	library: {
+		name: 'Modal',
+		type: 'umd',
+		// export: 'default'
+	},
+	globalObject: 'this',
 	libraryTarget: 'umd',
-	auxiliaryComment: 'React Hoc Modal'
+	auxiliaryComment: 'React Hoc Modal',
   },
   externals: {
     react: {
-       root: 'React',
+       root: 'react',
        commonjs: 'react',
        commonjs2: 'react',
        amd: 'react',
+    },
+	'react-dom': {
+       root: 'react-dom',
+       commonjs: 'react-dom',
+       commonjs2: 'react-dom',
+       amd: 'react-dom',
     }
   }
 };
+
+export default config;

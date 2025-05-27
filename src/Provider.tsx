@@ -20,7 +20,7 @@ const ProviderContext = createContext<TContainerContext>({
 	modals: null
 });
 
-const Provider = ({children, SPA = false}: TProvider) => {
+const Provider = ({children, SPA = false}: TProvider): React.ReactNode => {
 	const modals = useRef<TModals>({});
 
 	const modalsRef = useRef<HTMLDivElement>(null);

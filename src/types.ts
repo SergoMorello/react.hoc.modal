@@ -47,6 +47,16 @@ export type TConfig = {
 	contentStyle?: React.CSSProperties;
 
 	/**
+	 * Is mobile bottomsheet
+	 */
+	bottomSheet?: boolean;
+
+	/**
+	 * Bottomsheet max width
+	 */
+	bottomSheetMaxWidth?: number;
+
+	/**
 	 * Prefix name static styles
 	 */
 	stylePrefix?: string;
@@ -76,7 +86,7 @@ export type TConfig = {
 	footerRender?: ((props: TPropsRender) => React.ReactElement) | React.ReactElement;
 }
 
-export type TProps = TConfig & {
+export type ModalProps = TConfig & {
 
 	name: string;
 
@@ -95,7 +105,7 @@ export type TProps = TConfig & {
 }
 
 export type TProvider = {
-	children: React.ReactElement;
+	children: React.ReactNode;
 	SPA?: boolean;
 }
 
@@ -112,9 +122,9 @@ export type TControl = {
 	hide: () => void;
 }
 
-export type TUseModalControl<TState> = TControl & {
+export type TUseModalControl<ModalState> = TControl & {
 	setConfig: (config: TConfig) => void;
-	state?: TState;
+	state?: ModalState;
 }
 
 export type TStaticControl = {
@@ -136,9 +146,9 @@ export type TShowStatus = {
 	current: boolean;
 }
 
-export type TModal<TProps = {}, TState = {}> = TControl & {
+export type TModal<ModalProps = {}, ModalState = {}> = TControl & {
 	footerRef?: RefObject<HTMLDivElement> | null;
-	setState?: (data: TState) => void;
+	setState?: (data: ModalState) => void;
 }
 
 export type TPushControll = TControl & {
@@ -155,12 +165,12 @@ export type TContainerContext = {
 	count: () => number;
 }
 
-export type TModalConfigAction<TState = {}> = TModal & {
+export type TModalConfigAction<ModalState = {}> = TModal & {
 	setConfig: (config: TConfig) => void;
-	state?: TState;
+	state?: ModalState;
 }
 
-export type TPropsRender = TProps & TModal & {}
+export type TPropsRender = ModalProps & TModal & {}
 
 export type TConfigComponent = TConfig & {
 	/**

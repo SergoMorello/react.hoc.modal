@@ -9,8 +9,8 @@ import type {
 	TModalConfigAction
 } from "./types";
 
-const useModal = <TState>(config?: TConfig, deps: unknown[] = []): TUseModalControl<TState> => {
-	const {setConfig, show, hide, state} = useContext<TModalConfigAction<TState>>(WhithModalContext);
+const useModal = <ModalState>(config?: TConfig, deps: unknown[] = []): TUseModalControl<ModalState> => {
+	const {setConfig, show, hide, state} = useContext<TModalConfigAction<ModalState>>(WhithModalContext);
 
 	useLayoutEffect(() => {
 		if (config) setConfig(config);
