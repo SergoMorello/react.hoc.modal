@@ -82,7 +82,24 @@ body.block-scroll {
 	width: 100%;
     height: 100%;
     border-radius: 10px 10px 0 0;
+	transform: translateY(100%);
+	transition: transform 0.2s linear;
     overflow: hidden;
+	background-color: #FFFFFF;
+	box-sizing: border-box;
+}
+
+.bottomsheet-handle-container {
+
+}
+
+.bottomsheet-handle-indicator {
+
+}
+
+.bottomsheet {
+	display: flex;
+	flex-direction: column;
 }
 
 /* Effects */
