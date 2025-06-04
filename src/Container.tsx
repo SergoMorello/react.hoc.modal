@@ -49,6 +49,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const footerRef = useRef<HTMLDivElement>(null);
 	const showStatus = useRef(false);
 	const [isShow, setShow] = useState(false);
+	const [isMobile, setMobile] = useState(false);
 	const providerContext = useContext(ProviderContext);
 
 	const show = () => {
@@ -97,6 +98,13 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		}
 	};
 
+	const handleSize = (e?: Event) => {
+		const width = e ? (e.target as Window).innerWidth : window.innerWidth;
+		const isCurrentMobile = width <= 550;
+		if (isCurrentMobile !== isMobile) 
+			setMobile(isCurrentMobile);
+	};
+
 	useEffect(() => {
 		showStatus.current = isShow;
 
@@ -123,6 +131,14 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 			blockScroll(false);
 		}
 	}, []);
+
+	useLayoutEffect(() => {
+		handleSize();
+		window.addEventListener('resize', handleSize);
+		return () => {
+			window.removeEventListener('resize', handleSize);
+		}
+	},[isMobile]);
 
 	/**
 	 * Unset background cursor pointer
@@ -161,8 +177,9 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		];
 		if (theme) classesRoot.push(theme, styles[theme]);
 		if (effect) classesRoot.push(styles['effect-' + effect]);
+		if (bottomSheet) classesRoot.push(styles['bottomsheet']);
 		return classesRoot;
-	}, [theme, effect]);
+	}, [theme, effect, bottomSheet]);
 	
 	if (!providerContext.modals || !providerContext.modals!.current) {
 		return(null);
@@ -174,20 +191,14 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		hide,
 		footerRef
 	};
-
-	// const classesRoot = [
-	// 	Style('container')
-	// ];
-	// if (theme) classesRoot.push(theme, styles[theme]);
-	// if (effect) classesRoot.push(styles['effect-' + effect]);
 	
 	return createPortal(
 			<>
 			{isShow &&
 				<div className={classesRoot.join(' ')} ref={containerRef}>
-					<div className={Style('background')} onClick={backgroundHide}/>
+					
 					{
-						bottomSheet ? 
+						(bottomSheet && isMobile) ? 
 						<BottomSheet
 							{...props}
 							onBackground={backgroundHide}
@@ -201,31 +212,6 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 							renderProps={renderProps}
 						/>
 					}
-					
-					{/* <dialog className={Style('modal-container')} tabIndex={1} role="dialog" style={dialogStyle} open>
-						{
-							(typeof render === 'function' && !hideCloseButton) &&
-							<div className={Style('close-block')} onClick={backgroundHide}>
-								<div className={Style(['close', 'large'])} onClick={modalHide}/>
-							</div>
-						}
-						
-						{
-							typeof render === 'function' ? render(renderProps) :
-							<div className={Style('modal') + (className ? ' ' + className : '')} style={style}>
-								<div className={Style('header')}>
-									<div className={Style('text')}>
-										{title}
-									</div>
-									{(!hideCloseButton) && <div className={Style('close')} onClick={modalHide}/>}
-								</div>
-								<div className={Style('content')} style={contentStyle}>
-									{children}
-								</div>
-								{footerRender && <div className={Style('footer')} ref={footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
-							</div>
-						}
-					</dialog> */}
 				</div>
 			}
 		</>,

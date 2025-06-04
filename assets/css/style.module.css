@@ -38,6 +38,7 @@ body.block-scroll {
 	background-color: rgba(4, 16, 48, 0.95);
 	cursor: pointer;
 	z-index: -1;
+	-webkit-tap-highlight-color: transparent;
 }
 
 .modal-container {
@@ -95,6 +96,10 @@ body.block-scroll {
 
 .bottomsheet-handle-indicator {
 
+}
+
+.bottomsheet-container.touch {
+	transition: none;
 }
 
 .bottomsheet {
@@ -188,6 +193,7 @@ body.block-scroll {
 	max-height: 90vh;
 	padding: 10px;
 	overflow: auto;
+	color: #000000;
 }
 
 .content::-webkit-scrollbar {

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { TouchEvent, useEffect, useRef, useState } from "react";
 import { Style } from "../helpers";
 import { ModalProps, TPropsRender } from "../types";
+import styles from "../../assets/css/style.module.css";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -26,6 +27,12 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	const sheetRef = useRef<HTMLDialogElement>(null);
 	const [position, setPosition] = useState(0);
 	const startY = useRef<number | null>(null);
+	const endY = useRef<number | null>(null);
+
+	const hide = () => {
+		setPosition(0);
+		renderProps.hide();
+	};
 
 	const getSnapIndex = (position: number, snapPoints: string[]): number => {
 		const pos = (typeof position === 'string' ? parseFloat(position) : position);
@@ -42,84 +49,72 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 		return snapPoints.length - 1;
 	};
 
-	const handleTouchStart = (e: React.TouchEvent) => {
+	const handleTouchStart = (e: TouchEvent<HTMLDialogElement>) => {
+		sheetRef.current?.classList.add(styles['touch']);
 		startY.current = e.touches[0].clientY;
-	
+		endY.current = position;
 	};
 
-	const handleTouchMove = (e: React.TouchEvent) => {
-		if (startY.current === null) return;
+	const handleTouchMove = (e: TouchEvent<HTMLDialogElement>) => {
+		if (startY.current === null || endY.current === null) return;
 
 		const currentY = e.touches[0].clientY;
-	
-		setPosition(Math.abs(((currentY / window.innerHeight) * 100) - 100))
-		// const newPosition = Math.min(
-		// 	Math.max(position + delta, snapPoints[0]),
-		// 	snapPoints[snapPoints.length - 1]
-		// );
 
-		// setPosition(newPosition);
-		startY.current = currentY;
+		setPosition(Math.abs((((currentY - startY.current) / window.innerHeight) * 100) - endY.current))
 	};
 
 	const handleTouchEnd = () => {
+		sheetRef.current?.classList.remove(styles['touch']);
 		const snapIndex = getSnapIndex(position, snapPoints);
 		if (snapIndex >= 0) {
 			const snapPoint = parseFloat(snapPoints[snapIndex]);
 			setPosition(snapPoint);
 		}else{
-			renderProps.hide();
+			hide();
 		}
-		// document.removeEventListener('touchmove', handleTouchMove as any);
-		// document.removeEventListener('touchend', handleTouchEnd as any);
-		// document.removeEventListener('mousemove', handleTouchMove as any);
-		// document.removeEventListener('mouseup', handleTouchEnd as any);
-
-		// // snap to closest
-		// const closest = snapPoints.reduce((prev, curr) =>
-		// 	Math.abs(curr - position) < Math.abs(prev - position) ? curr : prev
-		// );
-		// setPosition(closest);
 	};
 	
 	useEffect(() => {
 		setPosition(parseFloat(snapPoints[0] ?? 10));
 	}, []);
 	
-	return(<dialog
-		className={Style('bottomsheet-container')}
-		tabIndex={1}
-		role="dialog"
-		style={{
-			...dialogStyle,
-			transform: `translateY(${Math.abs(position - 100)}%)`,
-		}}
-		ref={sheetRef}
-      	onTouchStart={handleTouchStart}
-		onTouchMove={handleTouchMove}
-		onTouchEnd={handleTouchEnd}
-		onTouchCancel={handleTouchEnd}
-		open
-	>
-		<div className={Style('bottomsheet-handle-container')}>
-			<span className={Style('bottomsheet-handle-indicator')}/>
-		</div>
-		
-		{
-			typeof render === 'function' ? render(renderProps) :
-			<div className={Style('bottomsheet') + (className ? ' ' + className : '')} style={style}>
-				<div className={Style('header')}>
-					<div className={Style('text')}>
-						{title}
-					</div>
-				</div>
-				<div className={Style('content')} style={contentStyle}>
-					{children}
-				</div>
-				{footerRender && <div className={Style('footer')}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
+	return(<>
+		<div className={Style('background')} onClick={hide}/>
+		<dialog
+			className={Style('bottomsheet-container')}
+			tabIndex={1}
+			role="dialog"
+			style={{
+				...dialogStyle,
+				transform: `translateY(${Math.abs(position - 100)}%)`,
+			}}
+			ref={sheetRef}
+			onTouchStart={handleTouchStart}
+			onTouchMove={handleTouchMove}
+			onTouchEnd={handleTouchEnd}
+			onTouchCancel={handleTouchEnd}
+			open
+		>
+			<div className={Style('bottomsheet-handle-container')}>
+				<span className={Style('bottomsheet-handle-indicator')}/>
 			</div>
-		}
-	</dialog>);
+			
+			{
+				typeof render === 'function' ? render(renderProps) :
+				<div className={Style('bottomsheet') + (className ? ' ' + className : '')} style={style}>
+					<div className={Style('header')}>
+						<div className={Style('text')}>
+							{title}
+						</div>
+					</div>
+					<div className={Style('content')} style={contentStyle}>
+						{children}
+					</div>
+					{footerRender && <div className={Style('footer')}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
+				</div>
+			}
+		</dialog>
+	</>);
 };
 
 export default BottomSheet;
