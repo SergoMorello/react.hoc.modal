@@ -17,7 +17,7 @@ import type {
 	TModal,
 	TPropsRender
 } from "./types";
-import styles from "../assets/css/style.module.css";
+import styles from "./style.module.scss";
 import HTMLViewport from "html-viewport";
 import { Style } from "./helpers";
 import Modal from "./Modals/Modal";
@@ -178,7 +178,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		if (theme) classesRoot.push(theme, styles[theme]);
 		if (effect) classesRoot.push(styles['effect-' + effect]);
 		if (bottomSheet) classesRoot.push(styles['bottomsheet']);
-		return classesRoot;
+		return classesRoot.join(' ');
 	}, [theme, effect, bottomSheet]);
 	
 	if (!providerContext.modals || !providerContext.modals!.current) {
@@ -195,7 +195,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	return createPortal(
 			<>
 			{isShow &&
-				<div className={classesRoot.join(' ')} ref={containerRef}>
+				<div className={classesRoot} ref={containerRef}>
 					
 					{
 						(bottomSheet && isMobile) ? 

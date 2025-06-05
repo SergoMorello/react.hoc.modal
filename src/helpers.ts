@@ -1,6 +1,7 @@
-import styles from "../assets/css/style.module.css";
+import globalStyles from "./style.module.scss";
 
-export const Style = (styleOrArray: string | string[], prefix = '_modal-'): string => {
+export const Style = (styleOrArray: string | string[], styles?: typeof globalStyles,  prefix = '_modal-'): string => {
+	styles = styles ?? globalStyles;
 	if (Array.isArray(styleOrArray)) {
 		return styleOrArray.map(() => Style(styleOrArray, prefix)).join(' ');
 	}else{

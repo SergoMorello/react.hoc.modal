@@ -1,7 +1,7 @@
 import { TouchEvent, useEffect, useRef, useState } from "react";
 import { Style } from "../helpers";
 import { ModalProps, TPropsRender } from "../types";
-import styles from "../../assets/css/style.module.css";
+import styles from "./style.module.scss";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -81,7 +81,7 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	return(<>
 		<div className={Style('background')} onClick={hide}/>
 		<dialog
-			className={Style('bottomsheet-container')}
+			className={Style('bottomsheet-container', styles)}
 			tabIndex={1}
 			role="dialog"
 			style={{
@@ -95,8 +95,8 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			onTouchCancel={handleTouchEnd}
 			open
 		>
-			<div className={Style('bottomsheet-handle-container')}>
-				<span className={Style('bottomsheet-handle-indicator')}/>
+			<div className={Style('bottomsheet-handle-container', styles)}>
+				<span className={Style('bottomsheet-handle-indicator', styles)}/>
 			</div>
 			
 			{
