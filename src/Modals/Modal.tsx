@@ -18,7 +18,8 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		style,
 		title,
 		children,
-		contentStyle
+		contentStyle,
+		closeLabel
 	} = props;
 
 	const containerContext = useContext(ContainerContext);
@@ -40,7 +41,7 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 						<div className={Style('text')}>
 							{title}
 						</div>
-						{(!hideCloseButton) && <div className={Style('close')} onClick={onClose}/>}
+						{(!hideCloseButton) && (closeLabel ? <span children={closeLabel} onClick={onClose}/> : <span className={Style('close')} onClick={onClose}/>)}
 					</div>
 					<div className={Style('content')} style={contentStyle}>
 						{children}

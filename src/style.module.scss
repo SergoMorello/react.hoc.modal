@@ -47,6 +47,8 @@ body.block-scroll {
 	border: 0;
 	outline: 0;
 	padding: 0;
+	margin: auto;
+	max-width: 550px;
 
 	&:focus {
 		outline: 0;

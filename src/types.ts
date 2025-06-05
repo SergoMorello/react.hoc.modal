@@ -1,4 +1,7 @@
-import { RefObject } from "react";
+import type {
+	ReactElement,
+	RefObject
+} from "react";
 
 export type TConfig = {
 	/**
@@ -25,6 +28,8 @@ export type TConfig = {
 	 * If true, hide close button (defaule false)
 	 */
 	hideCloseButton?: boolean;
+
+	closeLabel?: ReactElement;
 
 	/**
 	 * CSS classes

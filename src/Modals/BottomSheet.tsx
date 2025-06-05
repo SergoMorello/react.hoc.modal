@@ -19,7 +19,8 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 		className,
 		style,
 		children,
-		contentStyle
+		contentStyle,
+		title
 	} = props;
 
 	const containerContext = useContext(ContainerContext);
@@ -112,7 +113,12 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			{
 				typeof render === 'function' ? render(renderProps) :
 				<div className={Styles('bottomsheet') + (className ? ' ' + className : '')} style={style}>
-					<div className={Style('content')} style={contentStyle}>
+					<div className={Style('header')}>
+						<div className={Style('text')}>
+							{title}
+						</div>
+					</div>
+					<div className={Styles('content')} style={contentStyle}>
 						{children}
 					</div>
 					{containerContext.footer ? <div
