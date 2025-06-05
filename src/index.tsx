@@ -22,12 +22,18 @@ import {
 	TConfig,
 	TUseModalControl
 } from "./types";
+import {
+	Footer,
+	type FooterProps
+} from "./Footer";
 
 interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAttributes<TModal>> {
 	/**
 	 * Provider
 	 */
 	Provider: FC<TProvider>;
+
+	Footer: FC<FooterProps>;
 
 	/**
 	 * Configuration component
@@ -57,6 +63,7 @@ interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAtt
 const Modal: StaticComponents = {
 	...forwardRef<TModal, ModalProps>(({...args}, ref): JSX.Element => <Container {...args} ref={ref}/>),
 	Provider,
+	Footer,
 	Config,
 	show: (name: string) => staticAction.current!.show(name),
 	hide: (name?: string) => staticAction.current!.hide(name),
@@ -68,7 +75,8 @@ export {
 	withModal,
 	useModal,
 	Provider as ModalProvider,
-	Config as ModalConfig
+	Config as ModalConfig,
+	Footer as ModalFooter
 }
 
 export default Modal;

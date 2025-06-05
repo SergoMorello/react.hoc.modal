@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { Style } from "../helpers";
 import { ModalProps, TPropsRender } from "../types";
+import { ContainerContext } from "../Context";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -16,9 +18,10 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		style,
 		title,
 		children,
-		footerRender,
 		contentStyle
 	} = props;
+
+	const containerContext = useContext(ContainerContext);
 
 	return(<>
 		<div className={Style('background')} onClick={onBackground}/>
@@ -42,7 +45,13 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 					<div className={Style('content')} style={contentStyle}>
 						{children}
 					</div>
-					{footerRender && <div className={Style('footer')} ref={renderProps.footerRef}>{typeof footerRender === 'function' ? footerRender(renderProps) : footerRender}</div>}
+					{
+					containerContext.footer ? <div
+						className={Style('footer')}
+						ref={renderProps.footerRef}
+						children={containerContext.footer}
+					/> : null		
+					}
 				</div>
 			}
 		</dialog>

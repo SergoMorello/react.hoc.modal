@@ -14,7 +14,6 @@ const Config = ({children, ...props}: TConfigComponent) => {
 	useLayoutEffect(() => {
 		withModalContext.setConfig({
 			...props,
-			footerRender: () => <></>,
 			
 		});
 	},[props.title, props.disableClose]);

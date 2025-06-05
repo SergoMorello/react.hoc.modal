@@ -57,6 +57,11 @@ export type TConfig = {
 	bottomSheetMaxWidth?: number;
 
 	/**
+	 * Bottomsheet snap points
+	 */
+	bottomSheetSnapPoints?: string[];
+
+	/**
 	 * Prefix name static styles
 	 */
 	stylePrefix?: string;
@@ -77,13 +82,6 @@ export type TConfig = {
 	 * @returns {React.ReactElement}
 	 */
 	render?: (props: TPropsRender) => React.ReactElement;
-	
-	/**
-	 * Footer render content
-	 * @param props Modal props
-	 * @returns {React.ReactElement}
-	 */
-	footerRender?: ((props: TPropsRender) => React.ReactElement) | React.ReactElement;
 }
 
 export type ModalProps = TConfig & {

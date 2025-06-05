@@ -10,7 +10,7 @@ import {
 	FC,
 	useEffect,
 	RefAttributes,
-	ReactNode
+	ReactNode,
 } from "react";
 import { Container } from "./Container";
 import type {
@@ -19,7 +19,7 @@ import type {
 	TModalConfigAction
 } from "./types";
 
-export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefExoticComponent<ModalProps & RefAttributes<any>>, TModal<ModalProps, ModalState> {
+export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefExoticComponent<ModalProps & RefAttributes<ModalProps>>, TModal<ModalProps, ModalState> {
 	setState: (data: ModalState | ((data: ModalState) => ModalState)) => void;
 };
 
@@ -48,7 +48,7 @@ const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(Wrapp
 	};
 
 	return {
-		...forwardRef<TModal<ModalProps>, ModalProps>(({...props}, ref): JSX.Element => {
+		...forwardRef<TModal<ModalProps>, ModalProps>((props, ref): JSX.Element => {
 			const modalRef = useRef<TModal<ModalProps>>(null);
 			const [stateData, setStateData] = useState<ModalState>();
 			const id = useId();

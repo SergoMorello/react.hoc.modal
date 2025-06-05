@@ -6,7 +6,9 @@ import {
 	useState,
 	forwardRef,
 	useImperativeHandle,
-	useMemo
+	useMemo,
+	createContext,
+	ReactNode
 } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -22,26 +24,16 @@ import HTMLViewport from "html-viewport";
 import { Style } from "./helpers";
 import Modal from "./Modals/Modal";
 import BottomSheet from "./Modals/BottomSheet";
+import { ContainerContext } from "./Context";
 
 const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const {
-		children,
-		style,
-		contentStyle,
-		dialogStyle,
-		className,
 		bottomSheet,
-		bottomSheetMaxWidth,
 		name,
-		title,
 		disableClose = false,
 		backgroundClose = true,
-		hideCloseButton = false,
-		stylePrefix = '_modal-',
 		theme = 'light',
 		effect = 'scale',
-		render,
-		footerRender,
 		onHide
 	} = props;
 	
@@ -50,6 +42,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const showStatus = useRef(false);
 	const [isShow, setShow] = useState(false);
 	const [isMobile, setMobile] = useState(false);
+	const [footer, setFooter] = useState<ReactNode>();
 	const providerContext = useContext(ProviderContext);
 
 	const show = () => {
@@ -175,7 +168,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		const classesRoot = [
 			Style('container')
 		];
-		if (theme) classesRoot.push(theme, styles[theme]);
+		if (theme) classesRoot.push(theme);
 		if (effect) classesRoot.push(styles['effect-' + effect]);
 		if (bottomSheet) classesRoot.push(styles['bottomsheet']);
 		return classesRoot.join(' ');
@@ -193,7 +186,10 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	};
 	
 	return createPortal(
-			<>
+			<ContainerContext.Provider value={{
+				footer,
+				setFooter
+			}}>
 			{isShow &&
 				<div className={classesRoot} ref={containerRef}>
 					
@@ -214,7 +210,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 					}
 				</div>
 			}
-		</>,
+		</ContainerContext.Provider>,
 		providerContext.modals!.current
 	);
 });
