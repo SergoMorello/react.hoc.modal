@@ -16,6 +16,8 @@ body.block-scroll {
 	transition: opacity 0.3s;
 	z-index: 999;
 	opacity: 0;
+	overscroll-behavior-y: contain;
+	overscroll-behavior: none;
 
 	&::backdrop {
 		opacity: 0;

@@ -1,9 +1,10 @@
-import { TouchEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { TouchEvent, UIEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Style } from "../helpers";
 import { ModalProps, TPropsRender } from "../types";
 import styles from "./style.module.scss";
 import { ContainerContext } from "../Context";
 import { useStyle } from "../hooks";
+import { ContentScroll } from "../ContentScroll";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -27,13 +28,28 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	const Styles = useStyle(styles, 'bottomsheet-');
 
 	const snapPoints = useMemo(() => bottomSheetSnapPoints ?? ['50%'], [bottomSheetSnapPoints]);
-
+	
 	const sheetRef = useRef<HTMLDialogElement>(null);
 	const [position, setPosition] = useState(0);
-	const positionFooter = useMemo(() => (Math.abs(position - 100) / 100) * window.innerHeight, [position]);
 	const startY = useRef<number | null>(null);
 	const endY = useRef<number | null>(null);
-	
+	const active = useRef(false);
+	const lastPointIndex = useRef(-1);
+	const currentPointIndex = useMemo(() => {
+		const index = snapPoints.findIndex(v => parseFloat(v) === position);
+		if (index >= 0 && lastPointIndex.current !== index) {
+			lastPointIndex.current = index;
+		}
+		return lastPointIndex.current;
+	}, [snapPoints, position]);
+	const currentPoint = useMemo(() => snapPoints.at(currentPointIndex), [snapPoints, currentPointIndex]);
+	const lastPoint = useMemo(() => snapPoints.at(-1) ?? '50%', [snapPoints]);
+	const lastPointPosition = useMemo(() => parseFloat(lastPoint), [lastPoint]);
+	const lastPointInt = useMemo(() => lastPointPosition / 100, [lastPointPosition]);
+	const isLastPoint = useMemo(() => currentPoint === lastPoint, [currentPoint, lastPoint]);
+
+	const positionFooter = useMemo(() => (Math.abs(position - 70) / 100) * window.innerHeight, [position]);
+
 	const hide = () => {
 		setPosition(0);
 		renderProps.hide();
@@ -70,7 +86,7 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 
 		const currentY = e.touches[0].clientY;
 		const pos = Math.abs((((currentY - startY.current) / window.innerHeight) * 100) - endY.current);
-		if (pos >= 100 || pos <= 0 || currentY > window.innerHeight) return;
+		if (pos >= 100 || pos <= 0 || currentY > window.innerHeight || pos >= parseFloat(lastPoint)) return;
 		setPosition(pos);
 	};
 
@@ -98,6 +114,7 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			style={{
 				...dialogStyle,
 				transform: `translateY(${Math.abs(position - 100)}%)`,
+				// height: lastPoint
 			}}
 			ref={sheetRef}
 			onTouchStart={handleTouchStart}
@@ -112,15 +129,15 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			
 			{
 				typeof render === 'function' ? render(renderProps) :
-				<div className={Styles('bottomsheet') + (className ? ' ' + className : '')} style={style}>
+				<div className={Styles('bottomsheet') + (className ? ' ' + className : '')} style={{...style, flexGrow: lastPointInt}}>
 					<div className={Style('header')}>
 						<div className={Style('text')}>
 							{title}
 						</div>
 					</div>
-					<div className={Styles('content')} style={contentStyle}>
+					<ContentScroll className={Styles('content')} active={isLastPoint} style={style}>
 						{children}
-					</div>
+					</ContentScroll>
 					{containerContext.footer ? <div
 						className={Styles('footer')}
 						style={{

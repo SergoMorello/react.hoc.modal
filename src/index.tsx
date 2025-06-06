@@ -26,6 +26,10 @@ import {
 	Footer,
 	type FooterProps
 } from "./Footer";
+import {
+	ContentScroll,
+	type ContentScrollProps
+} from "./ContentScroll";
 
 interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAttributes<TModal>> {
 	/**
@@ -34,6 +38,8 @@ interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAtt
 	Provider: FC<TProvider>;
 
 	Footer: FC<FooterProps>;
+
+	ContentScroll: FC<ContentScrollProps>;
 
 	/**
 	 * Configuration component
@@ -64,6 +70,7 @@ const Modal: StaticComponents = {
 	...forwardRef<TModal, ModalProps>(({...args}, ref): JSX.Element => <Container {...args} ref={ref}/>),
 	Provider,
 	Footer,
+	ContentScroll,
 	Config,
 	show: (name: string) => staticAction.current!.show(name),
 	hide: (name?: string) => staticAction.current!.hide(name),
@@ -76,7 +83,8 @@ export {
 	useModal,
 	Provider as ModalProvider,
 	Config as ModalConfig,
-	Footer as ModalFooter
+	Footer as ModalFooter,
+	ContentScroll as ModalContentScroll
 }
 
 export default Modal;
