@@ -48,7 +48,7 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	const lastPointInt = useMemo(() => lastPointPosition / 100, [lastPointPosition]);
 	const isLastPoint = useMemo(() => currentPoint === lastPoint, [currentPoint, lastPoint]);
 
-	const positionFooter = useMemo(() => (Math.abs(position - 70) / 100) * window.innerHeight, [position]);
+	const positionFooter = useMemo(() => (Math.abs(position - lastPointPosition) / 100) * window.innerHeight, [position, lastPointPosition]);
 
 	const hide = () => {
 		setPosition(0);
