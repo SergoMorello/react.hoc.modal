@@ -4,8 +4,8 @@ body.block-scroll {
 }
 .container {
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	// justify-content: center;
+	// align-items: center;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -38,24 +38,42 @@ body.block-scroll {
 		height: 100%;
 		background-color: rgba(4, 16, 48, 0.95);
 		cursor: pointer;
-		z-index: -1;
+		z-index: 0;
 		-webkit-tap-highlight-color: transparent;
 	}
 }
 
-.modal-container {
+.modal-wrapper {
+	flex: 1;
 	display: flex;
-	position: fixed;
-	border: 0;
-	outline: 0;
-	padding: 0;
-	margin: auto;
-	max-width: 550px;
-
-	&:focus {
+	// justify-content: center;
+	// align-items: center;
+	
+	.modal-container {
+		display: flex;
+		position: fixed;
+		border: 0;
 		outline: 0;
+		padding: 0;
+		margin: 0;
+		max-width: 550px;
+		transform: translate(-50%, -50%);
+		top: 50%;
+		left: 50%;
+
+		&:focus {
+			outline: 0;
+		}
+
+		&.drag {
+			transition: none !important;
+			user-select: none !important;
+			cursor: pointer !important;
+		}
 	}
 }
+
+
 
 .close-block {
 	display: flex;

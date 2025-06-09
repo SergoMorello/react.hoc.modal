@@ -5,89 +5,103 @@ import type {
 
 export type TConfig = {
 	/**
-	 * Uniq modal name
+	 * Unique name of the modal (used as an identifier).
 	 */
 	name?: string;
 
 	/**
-	 * Modal title
+	 * Title text displayed in the modal header.
 	 */
 	title?: string;
 
 	/**
-	 * Switch disabled or enabled close, default false
+	 * Disables all closing methods (close button, ESC key, background click).
+	 * Default: false
 	 */
 	disableClose?: boolean;
 
 	/**
-	 * If true, click on background close modal (default true)
+	 * Allows closing the modal by clicking on the background overlay.
+	 * Default: true
 	 */
 	backgroundClose?: boolean;
 
 	/**
-	 * If true, hide close button (defaule false)
+	 * Hides the close button in the top-right corner.
+	 * Default: false
 	 */
 	hideCloseButton?: boolean;
 
+	/**
+	 * Custom React element to use as the close button.
+	 */
 	closeLabel?: ReactElement;
 
 	/**
-	 * CSS classes
+	 * Additional CSS class names for the modal container.
 	 */
 	className?: string;
 
 	/**
-	 * CSS styles dialog container
+	 * Inline styles for the outer dialog container.
 	 */
 	dialogStyle?: React.CSSProperties;
 
 	/**
-	 * CSS styles
+	 * Inline styles for the modal content area.
 	 */
 	style?: React.CSSProperties;
 
 	/**
-	 * CSS styles content container
+	 * Inline styles specifically for the content scroll container.
 	 */
 	contentStyle?: React.CSSProperties;
 
 	/**
-	 * Is mobile bottomsheet
+	 * Enables mobile-style bottom sheet layout.
 	 */
 	bottomSheet?: boolean;
 
 	/**
-	 * Bottomsheet max width
+	 * Maximum width (in pixels) for the bottom sheet layout.
 	 */
 	bottomSheetMaxWidth?: number;
 
 	/**
-	 * Bottomsheet snap points
+	 * Snap points for the bottom sheet (e.g., ['25%', '50%', '100%']).
 	 */
 	bottomSheetSnapPoints?: string[];
 
 	/**
-	 * Prefix name static styles
+	 * Prefix used for static CSS class generation.
 	 */
 	stylePrefix?: string;
 
 	/**
-	 * Show and hide effect
+	 * Enables drag-and-drop repositioning of the modal.
+	 */
+	draggable?: boolean;
+
+	/**
+	 * Animation effect used when showing or hiding the modal.
+	 * - 'none': no animation
+	 * - 'scale': zoom-in/out effect
 	 */
 	effect?: 'none' | 'scale';
 
 	/**
-	 * Modal container theme
+	 * Visual theme of the modal container.
+	 * - 'light': light background
+	 * - 'dark': dark background
 	 */
 	theme?: 'light' | 'dark';
 
 	/**
-	 * Custom render
-	 * @param props Modal props
-	 * @returns {React.ReactElement}
+	 * Custom render function for advanced modal layout or behavior.
+	 * Receives modal props as parameter.
 	 */
 	render?: (props: TPropsRender) => React.ReactElement;
-}
+};
 
 export type ModalProps = TConfig & {
 

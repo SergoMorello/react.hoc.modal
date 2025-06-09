@@ -26,7 +26,15 @@
     "react",
     "modal",
     "hoc",
-    "easy"
+    "easy",
+    "typescript",
+    "component",
+    "utility",
+    "customizable",
+    "hook",
+    "bottomsheet",
+    "sheet",
+    "drawer"
   ],
   "author": "Sergey Serov",
   "license": "MIT",

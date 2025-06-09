@@ -32,6 +32,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		name,
 		disableClose = false,
 		backgroundClose = true,
+		bottomSheetMaxWidth = 550,
 		theme = 'light',
 		effect = 'scale',
 		onHide
@@ -93,7 +94,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 
 	const handleSize = (e?: Event) => {
 		const width = e ? (e.target as Window).innerWidth : window.innerWidth;
-		const isCurrentMobile = width <= 550;
+		const isCurrentMobile = width <= bottomSheetMaxWidth;
 		if (isCurrentMobile !== isMobile) 
 			setMobile(isCurrentMobile);
 	};
@@ -131,7 +132,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		return () => {
 			window.removeEventListener('resize', handleSize);
 		}
-	},[isMobile]);
+	},[isMobile, bottomSheetMaxWidth]);
 
 	/**
 	 * Unset background cursor pointer

@@ -1,39 +1,44 @@
-import { CSSProperties, ReactNode, UIEvent, useEffect, useState } from "react";
+import {
+	type UIEvent,
+	type ReactNode,
+	type CSSProperties,
+	useRef,
+	useCallback
+} from "react";
 
 export interface ContentScrollProps {
 	children: ReactNode;
-	active: boolean;
+	active?: boolean;
 	style?: CSSProperties;
 	className?: string;
 	onScroll?: (event: UIEvent<HTMLDivElement>) => void;
 };
 
-const ContentScroll = ({children, style, active, className, onScroll}: ContentScrollProps) => {
-	const [currentActive, setActive] = useState(active);
+const ContentScroll = ({style, active, onScroll, ...props}: ContentScrollProps) => {
+	const scrollTop = useRef(true);
 
-	const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+	const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
 		const target = e.currentTarget;
   
-		if (target.scrollTop === 0) {
-			setActive(false);
-		}
+		scrollTop.current = target.scrollTop === 0;
+
 		if (typeof onScroll === 'function') {
 			onScroll(e);
 		}
-	};
+	}, []);
 
-	useEffect(() => {
-		setActive(active);
-	}, [active]);
-
+	const handleMove = useCallback((e: UIEvent<HTMLDivElement>) => {
+		if (active && !scrollTop.current) {
+			e.stopPropagation();
+		}
+	}, [scrollTop.current, active]);
+	
 	return(<div
-		className={className}
-		onTouchMove={(e) => currentActive ? e.stopPropagation() : null}
+		{...props}
+		onTouchMove={handleMove}
 		onScroll={handleScroll}
 		style={{...style, touchAction: active ? 'pan-y' : 'none'}}
-	>
-		{children}
-	</div>);
+	/>);
 };
 
 export {ContentScroll};

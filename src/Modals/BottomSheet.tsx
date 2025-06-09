@@ -20,7 +20,6 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 		className,
 		style,
 		children,
-		contentStyle,
 		title
 	} = props;
 
@@ -33,7 +32,6 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	const [position, setPosition] = useState(0);
 	const startY = useRef<number | null>(null);
 	const endY = useRef<number | null>(null);
-	const active = useRef(false);
 	const lastPointIndex = useRef(-1);
 	const currentPointIndex = useMemo(() => {
 		const index = snapPoints.findIndex(v => parseFloat(v) === position);
@@ -114,7 +112,6 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			style={{
 				...dialogStyle,
 				transform: `translateY(${Math.abs(position - 100)}%)`,
-				// height: lastPoint
 			}}
 			ref={sheetRef}
 			onTouchStart={handleTouchStart}
@@ -130,20 +127,20 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			{
 				typeof render === 'function' ? render(renderProps) :
 				<div className={Styles('bottomsheet') + (className ? ' ' + className : '')} style={{...style, flexGrow: lastPointInt}}>
-					<div className={Style('header')}>
-						<div className={Style('text')}>
+					<header className={Styles('header')}>
+						<div className={Styles('text')}>
 							{title}
 						</div>
-					</div>
+					</header>
 					<ContentScroll className={Styles('content')} active={isLastPoint} style={style}>
 						{children}
 					</ContentScroll>
-					{containerContext.footer ? <div
+					{containerContext.footer ? <footer
 						className={Styles('footer')}
 						style={{
 							transform: `translateY(-${positionFooter}px)`
 						}}
-					>{containerContext.footer}</div> : null}
+					>{containerContext.footer}</footer> : null}
 				</div>
 			}
 		</dialog>

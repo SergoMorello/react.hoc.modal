@@ -51,6 +51,8 @@
 		padding: 10px;
 		overflow: auto;
 		color: #000000;
+		overscroll-behavior-y: contain;
+		overscroll-behavior: none;
 
 		::-webkit-scrollbar {
 			width: 5px;
@@ -62,11 +64,26 @@
 		}
 	}
 
+	.header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+		font-size: 20px;
+		box-sizing: border-box;
+		padding: 15px 10px;
+		background-color: #FFFFFF;
+		color: #303843;
+		width: 100%;
+
+		.text {
+			flex: 1;
+			text-align: center;
+			padding: 0 5px 0 5px;
+		}
+	}
+
 	.footer {
-		// position: absolute;
-		// bottom: 0;
-		// left: 0;
-		// right: 0;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
@@ -76,6 +93,11 @@
 
 	:global(.dark) & {
 		background-color: #041030;
+
+		.header {
+			color: #ffffff;
+			background-color: #051f3d;
+		}
 
 		.footer {
 			color: #FFFFFF;
