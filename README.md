@@ -17,11 +17,11 @@ A lightweight and flexible React modal component that makes creating and managin
 - 📱 Adaptive bottom sheet for mobile devices
 
 ![Example](https://raw.githubusercontent.com/SergoMorello/react.hoc.modal/master/gif/chrome-capture-2025-6-6.gif)
+![Drag](https://raw.githubusercontent.com/SergoMorello/react.hoc.modal/master/gif/chrome-capture-2025-6-9.gif)
 
 ## 📦 Installation
 
 ```bash
-# Install the package
 npm install react-hoc-modal
 ```
 
