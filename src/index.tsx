@@ -26,10 +26,12 @@ import {
 	Footer,
 	type FooterProps
 } from "./Footer";
-import {
-	ContentScroll,
+import ContentScroll, {
 	type ContentScrollProps
-} from "./ContentScroll";
+} from "./Components/ContentScroll";
+import PopupItem, {
+	type PopupItemProps
+} from "./Components/PopupItem";
 
 interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAttributes<TModal>> {
 	/**
@@ -39,7 +41,9 @@ interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAtt
 
 	Footer: FC<FooterProps>;
 
-	ContentScroll: FC<ContentScrollProps>;
+	ContentScroll: ForwardRefExoticComponent<ContentScrollProps>;
+
+	PopupItem: FC<PopupItemProps>;
 
 	/**
 	 * Configuration component
@@ -71,6 +75,7 @@ const Modal: StaticComponents = {
 	Provider,
 	Footer,
 	ContentScroll,
+	PopupItem,
 	Config,
 	show: (name: string) => staticAction.current!.show(name),
 	hide: (name?: string) => staticAction.current!.hide(name),
@@ -84,7 +89,8 @@ export {
 	Provider as ModalProvider,
 	Config as ModalConfig,
 	Footer as ModalFooter,
-	ContentScroll as ModalContentScroll
+	ContentScroll as ModalContentScroll,
+	PopupItem as ModalPopupItem
 }
 
 export default Modal;

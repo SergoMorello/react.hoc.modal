@@ -1,24 +1,17 @@
 import {
-	createContext,
 	useImperativeHandle,
 	useRef,
 	createRef
 } from "react";
-import {
+import type {
 	TModals,
 	TProvider,
-	TContainerContext,
 	TStaticControl,
 	TPushControll
 } from "./types";
+import { ProviderContext } from "./Context";
 
 const staticAction = createRef<TStaticControl>();
-
-const ProviderContext = createContext<TContainerContext>({
-	push: () => {},
-	count: () => 0,
-	modals: null
-});
 
 const Provider = ({children, SPA = false}: TProvider): React.ReactNode => {
 	const modals = useRef<TModals>({});

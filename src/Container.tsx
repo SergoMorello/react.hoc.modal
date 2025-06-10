@@ -17,13 +17,15 @@ import {
 import type {
 	ModalProps,
 	TModal,
-	TPropsRender
+	TPropsRender,
+	TShowEvent
 } from "./types";
 import styles from "./style.module.scss";
 import HTMLViewport from "html-viewport";
 import { Style } from "./helpers";
-import Modal from "./Modals/Modal";
-import BottomSheet from "./Modals/BottomSheet";
+import Modal from "./Components/Modal";
+import BottomSheet from "./Components/BottomSheet";
+import Popup from "./Components/Popup";
 import { ContainerContext } from "./Context";
 
 const Container = forwardRef<TModal, ModalProps>((props, ref) => {
@@ -33,6 +35,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		disableClose = false,
 		backgroundClose = true,
 		bottomSheetMaxWidth = 550,
+		popup,
 		theme = 'light',
 		effect = 'scale',
 		onHide
@@ -41,6 +44,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const footerRef = useRef<HTMLDivElement>(null);
 	const showStatus = useRef(false);
+	const initPosition = useRef<DOMRect>();
 	const [isShow, setShow] = useState(false);
 	const [isMobile, setMobile] = useState(false);
 	const [footer, setFooter] = useState<ReactNode>();
@@ -48,6 +52,13 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 
 	const show = () => {
 		setShow(true);
+	};
+
+	const showPopup = (event?: TShowEvent) => {
+		if (event && 'target' in event) {
+			initPosition.current = (event.target as HTMLButtonElement).getBoundingClientRect();
+		}
+		show();
 	};
 
 	const _hide = () => {
@@ -161,6 +172,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	
 	useImperativeHandle(ref, () => ({
 		show,
+		showPopup,
 		hide,
 		footerRef
 	}));
@@ -181,6 +193,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	
 	const renderProps: TPropsRender = {
 		...props,
+		showPopup,
 		show,
 		hide,
 		footerRef
@@ -188,8 +201,10 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	
 	return createPortal(
 			<ContainerContext.Provider value={{
+				initPosition,
 				footer,
-				setFooter
+				setFooter,
+				hide
 			}}>
 			{isShow &&
 				<div className={classesRoot} ref={containerRef}>
@@ -201,13 +216,18 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 							onBackground={backgroundHide}
 							onClose={modalHide}
 							renderProps={renderProps}
-						/> :
-						<Modal
-							{...props}
-							onBackground={backgroundHide}
-							onClose={modalHide}
-							renderProps={renderProps}
-						/>
+						/> : (popup ? <Popup
+								{...props}
+								onBackground={backgroundHide}
+								onClose={modalHide}
+								renderProps={renderProps}
+							/> : <Modal
+								{...props}
+								onBackground={backgroundHide}
+								onClose={modalHide}
+								renderProps={renderProps}
+						/>)
+						
 					}
 				</div>
 			}

@@ -82,6 +82,10 @@ export type TConfig = {
 	 */
 	draggable?: boolean;
 
+	popup?: boolean;
+
+	popupPreferTop?: boolean;
+
 	/**
 	 * Animation effect used when showing or hiding the modal.
 	 * - 'none': no animation
@@ -163,9 +167,14 @@ export type TShowStatus = {
 	current: boolean;
 }
 
+export type TShowEvent = MouseEvent | {
+	
+};
+
 export type TModal<ModalProps = {}, ModalState = {}> = TControl & {
 	footerRef?: RefObject<HTMLDivElement> | null;
 	setState?: (data: ModalState) => void;
+	showPopup: (event?: TShowEvent) => void;
 }
 
 export type TPushControll = TControl & {

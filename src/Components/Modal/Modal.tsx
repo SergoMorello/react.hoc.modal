@@ -5,11 +5,12 @@ import {
 	useRef,
 	useState
 } from "react";
-import { Style } from "../helpers";
-import { ModalProps, TPropsRender } from "../types";
-import { ContainerContext } from "../Context";
-import { ContentScroll } from "../ContentScroll";
-import styles from "../style.module.scss";
+import { Style } from "../../helpers";
+import { ModalProps, TPropsRender } from "../../types";
+import { ContainerContext } from "../../Context";
+import ContentScroll from "../ContentScroll";
+import styles from "../../style.module.scss";
+import { useStyle } from "../../hooks";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -17,7 +18,7 @@ interface DefaultModalProps extends ModalProps {
 	renderProps: TPropsRender;
 };
 
-const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
+export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
 	const {
 		render,
 		dialogStyle,
@@ -31,6 +32,7 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		bottomSheetMaxWidth,
 		draggable
 	} = props;
+	const Styles = useStyle(styles, 'modal-');
 
 	const containerContext = useContext(ContainerContext);
 
@@ -106,7 +108,7 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 	};
 
 	return(<div
-		className={Style('modal-wrapper')}
+		className={Styles('modal-wrapper')}
 		onMouseDown={handleMoveStart}
 		onMouseUp={handleMoveEnd}
 		onMouseLeave={handleMoveEnd}
@@ -116,16 +118,15 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		onTouchCancel={handleMoveEnd}
 		onTouchMove={handleMove}
 	>
-		<div className={Style('background')} onClick={onBackground}/>
+		<div className={Styles('background')} onClick={onBackground}/>
 		<dialog
-			className={Style('modal-container')}
+			className={Styles('modal-container')}
 			tabIndex={1}
 			role="dialog"
 			style={{
 				...dialogStyle,
 				maxWidth: bottomSheetMaxWidth,
-				transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
-				// transform: `translate(${position.x}px, ${position.y}px)`
+				transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`
 			}}
 			
 			ref={modalRef}
@@ -133,28 +134,28 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		>
 			{
 				(typeof render === 'function' && !hideCloseButton) &&
-				<div className={Style('close-block')} onClick={onBackground}>
-					<div className={Style(['close', 'large'])} onClick={onClose}/>
+				<div className={Styles('close-block')} onClick={onBackground}>
+					<div className={Styles(['close', 'large'])} onClick={onClose}/>
 				</div>
 			}
 			
 			{
 				typeof render === 'function' ? render(renderProps) :
-				<div className={Style('modal') + (className ? ' ' + className : '')} style={style}>
+				<div className={Styles('modal') + (className ? ' ' + className : '')} style={style}>
 					<header
-						className={Style('header')}
+						className={Styles('header')}
 					>
-						<div className={Style('text')}>
+						<div className={Styles('text')}>
 							{title}
 						</div>
-						{(!hideCloseButton) && (closeLabel ? <span children={closeLabel} onClick={onClose}/> : <span className={Style('close')} onClick={onClose}/>)}
+						{(!hideCloseButton) && (closeLabel ? <span children={closeLabel} onClick={onClose}/> : <span className={Styles('close')} onClick={onClose}/>)}
 					</header>
-					<ContentScroll className={Style('content')} style={contentStyle} active>
+					<ContentScroll className={Styles('content')} style={contentStyle} active>
 						{children}
 					</ContentScroll>
 					{
 					containerContext.footer ? <footer
-						className={Style('footer')}
+						className={Styles('footer')}
 						ref={renderProps.footerRef}
 						children={containerContext.footer}
 					/> : null		
@@ -164,5 +165,3 @@ const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps
 		</dialog>
 	</div>);
 };
-
-export default Modal;

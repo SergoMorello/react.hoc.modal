@@ -4,8 +4,8 @@ import {
 	useState
 } from "react";
 import { createPortal } from "react-dom";
-import { WhithModalContext } from "./withModal";
 import { TConfigComponent } from "./types";
+import { WhithModalContext } from "./Context";
 
 const Config = ({children, ...props}: TConfigComponent) => {
 	const withModalContext = useContext(WhithModalContext);

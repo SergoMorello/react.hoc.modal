@@ -3,7 +3,8 @@ import {
 	type ReactNode,
 	type CSSProperties,
 	useRef,
-	useCallback
+	useCallback,
+	forwardRef
 } from "react";
 
 export interface ContentScrollProps {
@@ -14,7 +15,7 @@ export interface ContentScrollProps {
 	onScroll?: (event: UIEvent<HTMLDivElement>) => void;
 };
 
-const ContentScroll = ({style, active, onScroll, ...props}: ContentScrollProps) => {
+const ContentScroll = forwardRef<HTMLDivElement, ContentScrollProps>(({style, active, onScroll, ...props}, ref) => {
 	const scrollTop = useRef(true);
 
 	const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
@@ -38,7 +39,8 @@ const ContentScroll = ({style, active, onScroll, ...props}: ContentScrollProps) 
 		onTouchMove={handleMove}
 		onScroll={handleScroll}
 		style={{...style, touchAction: active ? 'pan-y' : 'none'}}
+		ref={ref}
 	/>);
-};
+});
 
 export {ContentScroll};

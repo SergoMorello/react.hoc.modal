@@ -5,37 +5,32 @@ import {
 	forwardRef,
 	createRef,
 	useImperativeHandle,
-	createContext,
 	useState,
 	FC,
 	useEffect,
-	RefAttributes,
-	ReactNode,
+	RefAttributes
 } from "react";
 import { Container } from "./Container";
 import type {
 	TModal,
 	TConfig,
-	TModalConfigAction
+	TShowEvent
 } from "./types";
+import { WhithModalContext } from "./Context";
 
 export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefExoticComponent<ModalProps & RefAttributes<ModalProps>>, TModal<ModalProps, ModalState> {
 	setState: (data: ModalState | ((data: ModalState) => ModalState)) => void;
 };
-
-export const WhithModalContext = createContext<TModalConfigAction<any>>({
-	setConfig: () => {},
-	state: {},
-	footerRef: null,
-	show: () => {},
-	hide: () => {}
-});
 
 const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<ModalProps> | FC<ModalProps>, config?: TConfig): WithModalComponent<ModalProps, ModalState> => {
 	const currentRef = createRef<TModal<ModalProps> | null>();
 	
 	const show = () => {
 		currentRef.current?.show();
+	};
+
+	const showPopup = (event?: TShowEvent) => {
+		currentRef.current?.showPopup(event);
 	};
 
 	const hide = () => {
@@ -74,6 +69,7 @@ const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(Wrapp
 				setConfig,
 				state: stateData,
 				footerRef: modalRef.current?.footerRef,
+				showPopup,
 				show,
 				hide
 			}}>
@@ -82,6 +78,7 @@ const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(Wrapp
 				</Container>
 			</WhithModalContext.Provider>);
 		}),
+		showPopup,
 		show,
 		hide,
 		setState

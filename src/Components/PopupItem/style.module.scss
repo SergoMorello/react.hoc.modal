@@ -1,0 +1,15 @@
+.popup-item {
+	padding: 0.4em 1.2em;
+	font-size: 1em;
+	font-weight: 400;
+	background-color: transparent;
+	color: #000000;
+	border-radius: inherit;
+	border: 1px solid #CCCCCC;
+	cursor: pointer;
+
+	&:active, &:focus {
+		border: none;
+		outline: none;
+	}
+}

@@ -1,10 +1,10 @@
 import { TouchEvent, UIEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Style } from "../helpers";
-import { ModalProps, TPropsRender } from "../types";
+import { Style } from "../../helpers";
+import { ModalProps, TPropsRender } from "../../types";
 import styles from "./style.module.scss";
-import { ContainerContext } from "../Context";
-import { useStyle } from "../hooks";
-import { ContentScroll } from "../ContentScroll";
+import { ContainerContext } from "../../Context";
+import { useStyle } from "../../hooks";
+import ContentScroll from "../ContentScroll";
 
 interface DefaultModalProps extends ModalProps {
 	onBackground: () => void;
@@ -12,7 +12,7 @@ interface DefaultModalProps extends ModalProps {
 	renderProps: TPropsRender;
 };
 
-const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
+export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
 	const {
 		render,
 		dialogStyle,
@@ -26,9 +26,10 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 	const containerContext = useContext(ContainerContext);
 	const Styles = useStyle(styles, 'bottomsheet-');
 
-	const snapPoints = useMemo(() => bottomSheetSnapPoints ?? ['50%'], [bottomSheetSnapPoints]);
+	const [snapPoints, setSnapPoints] = useState<string[]>([]);
 	
 	const sheetRef = useRef<HTMLDialogElement>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
 	const [position, setPosition] = useState(0);
 	const startY = useRef<number | null>(null);
 	const endY = useRef<number | null>(null);
@@ -98,10 +99,20 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 			hide();
 		}
 	};
+
+	useEffect(() => {
+		if (contentRef.current && (!bottomSheetSnapPoints || (bottomSheetSnapPoints && bottomSheetSnapPoints[0] === 'auto'))) {
+			let autoSnap = (contentRef.current?.offsetHeight / window.innerHeight) * 100;
+			autoSnap = autoSnap >= 100 ? 100 : autoSnap;
+			setSnapPoints([`${autoSnap}%`]);
+		}else{
+			setSnapPoints(bottomSheetSnapPoints ?? ['50%']);
+		}
+	}, [bottomSheetSnapPoints]);
 	
 	useEffect(() => {
-		setPosition(parseFloat(snapPoints[0] ?? 10));
-	}, []);
+		if (snapPoints.length > 0) setPosition(parseFloat(snapPoints[0] ?? 10));
+	}, [snapPoints]);
 	
 	return(<>
 		<div className={Style('background')} onClick={hide}/>
@@ -132,7 +143,7 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 							{title}
 						</div>
 					</header>
-					<ContentScroll className={Styles('content')} active={isLastPoint} style={style}>
+					<ContentScroll className={Styles('content')} active={isLastPoint} style={style} ref={contentRef}>
 						{children}
 					</ContentScroll>
 					{containerContext.footer ? <footer
@@ -146,5 +157,3 @@ const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModa
 		</dialog>
 	</>);
 };
-
-export default BottomSheet;
