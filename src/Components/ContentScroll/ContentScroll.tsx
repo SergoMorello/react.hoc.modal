@@ -4,7 +4,8 @@ import {
 	type CSSProperties,
 	useRef,
 	useCallback,
-	forwardRef
+	forwardRef,
+	memo
 } from "react";
 
 export interface ContentScrollProps {
@@ -15,7 +16,7 @@ export interface ContentScrollProps {
 	onScroll?: (event: UIEvent<HTMLDivElement>) => void;
 };
 
-const ContentScroll = forwardRef<HTMLDivElement, ContentScrollProps>(({style, active, onScroll, ...props}, ref) => {
+const ContentScroll = memo(forwardRef<HTMLDivElement, ContentScrollProps>(({style, active, onScroll, ...props}, ref) => {
 	const scrollTop = useRef(true);
 
 	const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
@@ -32,15 +33,15 @@ const ContentScroll = forwardRef<HTMLDivElement, ContentScrollProps>(({style, ac
 		if (active && !scrollTop.current) {
 			e.stopPropagation();
 		}
-	}, [scrollTop.current, active]);
+	}, [scrollTop, active]);
 	
 	return(<div
 		{...props}
 		onTouchMove={handleMove}
 		onScroll={handleScroll}
-		style={{...style, touchAction: active ? 'pan-y' : 'none'}}
+		style={{...style, overflow: active ? 'auto' : 'hidden'}}
 		ref={ref}
 	/>);
-});
+}));
 
 export {ContentScroll};

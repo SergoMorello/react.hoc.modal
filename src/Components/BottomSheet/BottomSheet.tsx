@@ -1,4 +1,4 @@
-import { TouchEvent, UIEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { TouchEvent, UIEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Style } from "../../helpers";
 import { ModalProps, TPropsRender } from "../../types";
 import styles from "./style.module.scss";
@@ -46,6 +46,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 	const lastPointPosition = useMemo(() => parseFloat(lastPoint), [lastPoint]);
 	const lastPointInt = useMemo(() => lastPointPosition / 100, [lastPointPosition]);
 	const isLastPoint = useMemo(() => currentPoint === lastPoint, [currentPoint, lastPoint]);
+	const isActiveContent = useMemo(() => Math.round(position) === lastPointPosition, [position, lastPointPosition]);
 
 	const positionFooter = useMemo(() => (Math.abs(position - lastPointPosition) / 100) * window.innerHeight, [position, lastPointPosition]);
 
@@ -54,7 +55,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 		renderProps.hide();
 	};
 
-	const getSnapIndex = (position: number, snapPoints: string[]): number => {
+	const getSnapIndex = useCallback((position: number, snapPoints: string[]): number => {
 		const pos = typeof position === 'string' ? parseFloat(position) : position;
 		const snaps = snapPoints.map(p => parseFloat(p));
 
@@ -72,24 +73,24 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 		}
 
 		return snaps.length - 1;
-	};
+	}, []);
 
-	const handleTouchStart = (e: TouchEvent<HTMLDialogElement>) => {
+	const handleTouchStart = useCallback((e: TouchEvent<HTMLDialogElement>) => {
 		sheetRef.current?.classList.add(styles['touch']);
 		startY.current = e.touches[0].clientY;
 		endY.current = position;
-	};
+	}, [position]);
 
-	const handleTouchMove = (e: TouchEvent<HTMLDialogElement>) => {
+	const handleTouchMove = useCallback((e: TouchEvent<HTMLDialogElement>) => {
 		if (startY.current === null || endY.current === null) return;
 
 		const currentY = e.touches[0].clientY;
 		const pos = Math.abs((((currentY - startY.current) / window.innerHeight) * 100) - endY.current);
-		if (pos >= 100 || pos <= 0 || currentY > window.innerHeight || pos >= parseFloat(lastPoint)) return;
-		setPosition(pos);
-	};
+		if (pos >= 100 || pos <= 0 || currentY > window.innerHeight) return;
+		setPosition(pos > lastPointPosition ? lastPointPosition : pos);
+	}, [startY.current, endY.current, lastPointPosition]);
 
-	const handleTouchEnd = () => {
+	const handleTouchEnd = useCallback(() => {
 		sheetRef.current?.classList.remove(styles['touch']);
 		const snapIndex = getSnapIndex(position, snapPoints);
 		if (snapIndex >= 0) {
@@ -98,7 +99,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 		}else{
 			hide();
 		}
-	};
+	}, [position, snapPoints]);
 
 	useEffect(() => {
 		if (contentRef.current && (!bottomSheetSnapPoints || (bottomSheetSnapPoints && bottomSheetSnapPoints[0] === 'auto'))) {
@@ -143,7 +144,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 							{title}
 						</div>
 					</header>
-					<ContentScroll className={Styles('content')} active={isLastPoint} style={style} ref={contentRef}>
+					<ContentScroll className={Styles('content')} active={isActiveContent} style={style} ref={contentRef}>
 						{children}
 					</ContentScroll>
 					{containerContext.footer ? <footer

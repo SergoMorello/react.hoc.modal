@@ -41,7 +41,7 @@ interface StaticComponents extends ForwardRefExoticComponent<ModalProps & RefAtt
 
 	Footer: FC<FooterProps>;
 
-	ContentScroll: ForwardRefExoticComponent<ContentScrollProps>;
+	// ContentScroll: ForwardRefExoticComponent<ContentScrollProps>;
 
 	PopupItem: FC<PopupItemProps>;
 
@@ -74,7 +74,7 @@ const Modal: StaticComponents = {
 	...forwardRef<TModal, ModalProps>(({...args}, ref): JSX.Element => <Container {...args} ref={ref}/>),
 	Provider,
 	Footer,
-	ContentScroll,
+	// ContentScroll,
 	PopupItem,
 	Config,
 	show: (name: string) => staticAction.current!.show(name),
