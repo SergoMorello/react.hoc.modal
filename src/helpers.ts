@@ -5,6 +5,6 @@ export const Style = (styleOrArray: string | string[], styles?: typeof globalSty
 	if (Array.isArray(styleOrArray)) {
 		return styleOrArray.map(() => Style(styleOrArray, prefix)).join(' ');
 	}else{
-		return styles[styleOrArray] + ' ' + prefix + styleOrArray;
+		return `${styles[styleOrArray]} ${prefix}${styleOrArray}`;
 	}
 };

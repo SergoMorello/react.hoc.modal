@@ -29,7 +29,7 @@ export const Popup = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 		popupPreferTop
 	} = props;
 
-	const Styles = useStyle(styles, 'popup-');
+	const Styles = useStyle(styles, '_popup-');
 
 	const containerContext = useContext(ContainerContext);
 

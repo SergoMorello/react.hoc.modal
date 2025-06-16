@@ -8,7 +8,7 @@ export interface PopupItemProps extends HTMLAttributes<HTMLButtonElement> {
 };
 
 export const PopupItem = ({className, onClick, ...props}: PopupItemProps): ReactNode | Promise<ReactNode> => {
-	const Styles = useStyle(styles, 'popup-');
+	const Styles = useStyle(styles, '_popup-');
 	const {hide} = useContext(ContainerContext);
 
 	const handleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {

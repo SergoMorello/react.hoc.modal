@@ -32,7 +32,7 @@ export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 		bottomSheetMaxWidth,
 		draggable
 	} = props;
-	const Styles = useStyle(styles, 'modal-');
+	const Styles = useStyle(styles, '_modal-');
 
 	const containerContext = useContext(ContainerContext);
 

@@ -24,7 +24,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 	} = props;
 
 	const containerContext = useContext(ContainerContext);
-	const Styles = useStyle(styles, 'bottomsheet-');
+	const Styles = useStyle(styles, '_bottomsheet-');
 
 	const [snapPoints, setSnapPoints] = useState<string[]>([]);
 	
