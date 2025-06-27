@@ -62,6 +62,8 @@ export type TConfig = {
 	 */
 	bottomSheet?: boolean;
 
+	bottomSheetOverDrag?: number;
+
 	/**
 	 * Maximum width (in pixels) for the bottom sheet layout.
 	 */

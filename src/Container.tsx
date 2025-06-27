@@ -49,6 +49,9 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const [isMobile, setMobile] = useState(false);
 	const [footer, setFooter] = useState<ReactNode>();
 	const providerContext = useContext(ProviderContext);
+	const listeners = useRef({
+		onHide: () => {}
+	});
 
 	const show = () => {
 		setShow(true);
@@ -64,11 +67,11 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const _hide = () => {
 		const element = containerRef.current;
 		if (!element) return;
-		
+		listeners.current.onHide();
 		element!.ontransitionend = () => {
 			setShow(false);
 		};
-		element?.classList.remove(styles['active']);
+		element?.classList.remove(styles['active'], 'active');
 	};
 
 	const hide = () => {
@@ -117,7 +120,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 
 		if (isShow) {
 			viewport.add('interactive-widget', 'resizes-content');
-			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active']));
+			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active'], 'active'));
 	 	}else{
 			viewport.remove('interactive-widget');
 			onHide?.();
@@ -203,6 +206,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 			<ContainerContext.Provider value={{
 				initPosition,
 				footer,
+				listeners,
 				setFooter,
 				hide
 			}}>

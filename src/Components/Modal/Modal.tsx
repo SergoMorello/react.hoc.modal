@@ -87,6 +87,7 @@ export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 
 	const handleMove = (e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
 		if (!panActive.current) return;
+		e.stopPropagation();
 		const {clientX, clientY} = 'touches' in e ? e.touches[0] : e;
 
 		const dx = clientX - startPosition.current.x;

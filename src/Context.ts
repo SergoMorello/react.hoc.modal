@@ -10,6 +10,9 @@ export const ProviderContext = createContext<TContainerContext>({
 export const ContainerContext = createContext({
 	hide: () => {},
 	setFooter: (element: ReactNode) => {},
+	listeners: {current: {
+		onHide: () => {}
+	}},
 	initPosition: {current: undefined} as MutableRefObject<DOMRect | undefined>,
 	footer: {} as ReactNode
 });

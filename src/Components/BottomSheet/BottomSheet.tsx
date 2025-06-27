@@ -1,4 +1,4 @@
-import { TouchEvent, UIEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, TouchEvent, UIEvent, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Style } from "../../helpers";
 import { ModalProps, TPropsRender } from "../../types";
 import styles from "./style.module.scss";
@@ -6,17 +6,19 @@ import { ContainerContext } from "../../Context";
 import { useStyle } from "../../hooks";
 import ContentScroll from "../ContentScroll";
 
-interface DefaultModalProps extends ModalProps {
+interface hideBottomSheet extends ModalProps {
 	onBackground: () => void;
 	onClose: () => void;
 	renderProps: TPropsRender;
 };
 
-export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
+export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: hideBottomSheet) => {
 	const {
 		render,
 		dialogStyle,
 		bottomSheetSnapPoints,
+		disableClose,
+		bottomSheetOverDrag,
 		className,
 		style,
 		children,
@@ -27,6 +29,7 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 	const Styles = useStyle(styles, '_bottomsheet-');
 
 	const [snapPoints, setSnapPoints] = useState<string[]>([]);
+	const overDrag = useMemo(() => bottomSheetOverDrag ?? 0.01, [bottomSheetOverDrag]);
 	
 	const sheetRef = useRef<HTMLDialogElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -35,23 +38,31 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 	const endY = useRef<number | null>(null);
 	const lastPointIndex = useRef(-1);
 	const currentPointIndex = useMemo(() => {
-		const index = snapPoints.findIndex(v => parseFloat(v) === position);
+		const index = snapPoints.findIndex(v => parseFloat(v) >= position);
 		if (index >= 0 && lastPointIndex.current !== index) {
 			lastPointIndex.current = index;
 		}
 		return lastPointIndex.current;
 	}, [snapPoints, position]);
+	
 	const currentPoint = useMemo(() => snapPoints.at(currentPointIndex), [snapPoints, currentPointIndex]);
 	const lastPoint = useMemo(() => snapPoints.at(-1) ?? '50%', [snapPoints]);
+	const firstPoint = useMemo(() => snapPoints.at(0) ?? '0%', [snapPoints]);
+	const firstPointPosition = useMemo(() => parseFloat(firstPoint), [firstPoint]);
 	const lastPointPosition = useMemo(() => parseFloat(lastPoint), [lastPoint]);
 	const lastPointInt = useMemo(() => lastPointPosition / 100, [lastPointPosition]);
+	const isFirstPoint = useMemo(() => (snapPoints.at(0) ?? '0%') === currentPoint, [snapPoints, currentPoint]);
 	const isLastPoint = useMemo(() => currentPoint === lastPoint, [currentPoint, lastPoint]);
 	const isActiveContent = useMemo(() => Math.round(position) === lastPointPosition, [position, lastPointPosition]);
 
 	const positionFooter = useMemo(() => (Math.abs(position - lastPointPosition) / 100) * window.innerHeight, [position, lastPointPosition]);
 
-	const hide = () => {
+	const hideBottomSheet = () => {
 		setPosition(0);
+	};
+
+	const hide = () => {
+		if (disableClose) return;
 		renderProps.hide();
 	};
 
@@ -81,14 +92,29 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 		endY.current = position;
 	}, [position]);
 
+	const stopPan = useRef(0);
+
 	const handleTouchMove = useCallback((e: TouchEvent<HTMLDialogElement>) => {
 		if (startY.current === null || endY.current === null) return;
-
+		e.stopPropagation();
 		const currentY = e.touches[0].clientY;
-		const pos = Math.abs((((currentY - startY.current) / window.innerHeight) * 100) - endY.current);
+		let pos = Math.abs((((currentY - startY.current) / window.innerHeight) * 100) - endY.current);
 		if (pos >= 100 || pos <= 0 || currentY > window.innerHeight) return;
-		setPosition(pos > lastPointPosition ? lastPointPosition : pos);
-	}, [startY.current, endY.current, lastPointPosition]);
+		if (pos >= lastPointPosition || (disableClose && pos <= firstPointPosition)) {
+			if (overDrag === 0) return;
+			if (stopPan.current === 0) {
+				if (pos >= lastPointPosition) stopPan.current = lastPointPosition;
+				else if (pos <= firstPointPosition) stopPan.current = firstPointPosition;
+			}else{
+				if (pos >= lastPointPosition) stopPan.current += overDrag;
+				else if (pos <= firstPointPosition) stopPan.current -= overDrag;
+			}
+			pos = stopPan.current;
+		}else{
+			stopPan.current = 0;
+		}
+		setPosition(pos);
+	}, [startY.current, endY.current, lastPointPosition, position, isFirstPoint, overDrag, disableClose]);
 
 	const handleTouchEnd = useCallback(() => {
 		sheetRef.current?.classList.remove(styles['touch']);
@@ -97,9 +123,14 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 			const snapPoint = parseFloat(snapPoints[snapIndex]);
 			setPosition(snapPoint);
 		}else{
-			hide();
+			if (disableClose) {
+				setPosition(firstPointPosition);
+			}else{
+				hide();
+			}
 		}
-	}, [position, snapPoints]);
+		stopPan.current = 0;
+	}, [position, snapPoints, firstPointPosition]);
 
 	useEffect(() => {
 		if (contentRef.current && (!bottomSheetSnapPoints || (bottomSheetSnapPoints && bottomSheetSnapPoints[0] === 'auto'))) {
@@ -114,6 +145,10 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: Defa
 	useEffect(() => {
 		if (snapPoints.length > 0) setPosition(parseFloat(snapPoints[0] ?? 10));
 	}, [snapPoints]);
+
+	useEffect(() => {
+		containerContext.listeners.current.onHide = hideBottomSheet;
+	}, []);
 	
 	return(<>
 		<div className={Style('background')} onClick={hide}/>
