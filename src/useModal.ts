@@ -1,6 +1,5 @@
 import {
-	useContext,
-	useLayoutEffect
+	useContext
 } from "react";
 import type {
 	TUseModalControl,
@@ -8,6 +7,7 @@ import type {
 	TModalConfigAction
 } from "./types";
 import { WhithModalContext } from "./Context";
+import { useLayoutEffect } from "./helpers";
 
 const useModal = <ModalState>(config?: TConfig, deps: unknown[] = []): TUseModalControl<ModalState> => {
 	const {setConfig, show, hide, state} = useContext<TModalConfigAction<ModalState>>(WhithModalContext);

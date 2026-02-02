@@ -1,13 +1,11 @@
-import {
+import React, {
 	useContext,
 	useEffect,
-	useLayoutEffect,
 	useRef,
 	useState,
 	forwardRef,
 	useImperativeHandle,
 	useMemo,
-	createContext,
 	ReactNode
 } from "react";
 import { createPortal } from "react-dom";
@@ -22,7 +20,7 @@ import type {
 } from "./types";
 import styles from "./style.module.scss";
 import HTMLViewport from "html-viewport";
-import { Style } from "./helpers";
+import { Style, useLayoutEffect } from "./helpers";
 import Modal from "./Components/Modal";
 import BottomSheet from "./Components/BottomSheet";
 import Popup from "./Components/Popup";
