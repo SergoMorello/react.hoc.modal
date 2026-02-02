@@ -89,6 +89,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	};
 
 	const blockScroll = (status: boolean) => {
+		if (typeof window === 'undefined') return;
 		if (!document!.body) return;
 		const classBody = document.body.classList;
 		status ? classBody.add(styles['block-scroll']) : classBody.remove(styles['block-scroll']);
@@ -107,6 +108,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	};
 
 	const handleSize = (e?: Event) => {
+		if (typeof window === 'undefined') return;
 		const width = e ? (e.target as Window).innerWidth : window.innerWidth;
 		const isCurrentMobile = width <= bottomSheetMaxWidth;
 		if (isCurrentMobile !== isMobile) 
@@ -141,6 +143,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	}, []);
 
 	useLayoutEffect(() => {
+		if (typeof window === 'undefined') return;
 		handleSize();
 		window.addEventListener('resize', handleSize);
 		return () => {
@@ -162,6 +165,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	},[backgroundClose]);
 
 	useLayoutEffect(() => {
+		if (typeof window === 'undefined') return;
 		providerContext.push(name, {
 			show,
 			hide: _hide,

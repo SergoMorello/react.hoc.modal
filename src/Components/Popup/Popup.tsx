@@ -41,6 +41,7 @@ export const Popup = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 	});
 
 	const popupMove = (rect: { x: number; y: number; width: number; height: number }, preferTop: boolean = false) => {
+		if (typeof window === 'undefined') return;
 		if (!popupRef.current) return;
 
 		const popup = popupRef.current;

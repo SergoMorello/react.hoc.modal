@@ -19,6 +19,9 @@ interface DefaultModalProps extends ModalProps {
 };
 
 export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultModalProps) => {
+	if (typeof window === 'undefined') {
+		return null;
+	}
 	const {
 		render,
 		dialogStyle,

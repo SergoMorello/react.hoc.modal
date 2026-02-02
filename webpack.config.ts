@@ -1,11 +1,14 @@
 import type { Configuration } from 'webpack';
 import path from 'path';
 
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 const config: Configuration = {
-	entry: {
-		index: path.resolve(__dirname, 'src/index.tsx')
-	},
-	target: 'web',
+	entry: path.resolve(__dirname, 'src/index.tsx'),
+	target: ['web', 'es2020'],
 	mode: 'production',
 	devtool: "source-map",
 	module: {
@@ -66,28 +69,17 @@ const config: Configuration = {
 		path: path.resolve(__dirname, 'dist'),
 		clean: true,
 		library: {
-			name: 'Modal',
-			type: 'umd',
-			// export: 'default'
+			type: 'module',
 		},
-		globalObject: 'this',
-		libraryTarget: 'umd',
 		auxiliaryComment: 'React Hoc Modal',
 	},
+	experiments: {
+		outputModule: true,
+	},
 	externals: {
-		react: {
-			root: 'react',
-			commonjs: 'react',
-			commonjs2: 'react',
-			amd: 'react',
-		},
-		'react-dom': {
-			root: 'react-dom',
-			commonjs: 'react-dom',
-			commonjs2: 'react-dom',
-			amd: 'react-dom',
-		}
-	}
+		react: 'react',
+		'react-dom': 'react-dom',
+	},
 };
 
 export default config;

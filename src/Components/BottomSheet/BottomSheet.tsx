@@ -13,6 +13,9 @@ interface hideBottomSheet extends ModalProps {
 };
 
 export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: hideBottomSheet) => {
+	if (typeof window === 'undefined') {
+		return null;
+	}
 	const {
 		render,
 		dialogStyle,

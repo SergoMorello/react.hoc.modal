@@ -41,6 +41,10 @@ const Provider = ({children, SPA = false}: TProvider): React.ReactNode => {
 	};
 
 	const createDynamicContainer = (): HTMLDivElement => {
+		if (typeof window === 'undefined') {
+			const fakeDiv = document.createElement('div');
+			return fakeDiv;
+		}
 		const nameId = '__modals-container';
 		const containerModals = document.getElementById(nameId);
 		if (containerModals) {

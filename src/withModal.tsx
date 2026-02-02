@@ -23,6 +23,7 @@ export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefEx
 };
 
 const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(WrappedComponent: ForwardRefExoticComponent<ModalProps> | FC<ModalProps>, config?: TConfig): WithModalComponent<ModalProps, ModalState> => {
+
 	const currentRef = createRef<TModal<ModalProps> | null>();
 	
 	const show = () => {
