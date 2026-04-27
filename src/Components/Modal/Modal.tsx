@@ -128,9 +128,9 @@ export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 			tabIndex={1}
 			role="dialog"
 			style={{
-				...dialogStyle,
 				maxWidth: bottomSheetMaxWidth,
-				transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`
+				transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
+				...dialogStyle
 			}}
 			
 			ref={modalRef}

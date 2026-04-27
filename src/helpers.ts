@@ -5,13 +5,19 @@ import {
 } from "react";
 import globalStyles from "./style.module.scss";
 
-export const Style = (styleOrArray: string | string[], styles?: typeof globalStyles,  prefix = '_modal-'): string => {
-	styles = styles ?? globalStyles;
-	if (Array.isArray(styleOrArray)) {
-		return styleOrArray.map(() => Style(styleOrArray, prefix)).join(' ');
-	}else{
-		return `${styles[styleOrArray]} ${prefix}${styleOrArray}`;
-	}
+export const Style = (
+  styleOrArray: string | string[], 
+  styles: typeof globalStyles = globalStyles, 
+  prefix = '_modal-'
+): string => {
+  if (Array.isArray(styleOrArray)) {
+    // Передаем текущий элемент (s), а не весь массив
+    return styleOrArray.map((s) => Style(s, styles, prefix)).join(' ');
+  }
+  
+  // Добавляем проверку на существование стиля в объекте
+  const mainStyle = styles[styleOrArray] || '';
+  return `${mainStyle} ${prefix}${styleOrArray}`.trim();
 };
 
 export const useLayoutEffect = (effect: EffectCallback, deps?: DependencyList) => {
