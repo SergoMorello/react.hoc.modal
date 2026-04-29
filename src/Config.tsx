@@ -4,11 +4,11 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { TConfigComponent } from "./types";
-import { WhithModalContext } from "./Context";
+import { WithModalContext } from "./Context";
 import { useLayoutEffect } from "./helpers";
 
 const Config = ({children, ...props}: TConfigComponent) => {
-	const withModalContext = useContext(WhithModalContext);
+	const withModalContext = useContext(WithModalContext);
 	const [active, setActive] = useState(false);
 	
 	useLayoutEffect(() => {

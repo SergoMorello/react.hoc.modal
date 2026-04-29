@@ -14,30 +14,32 @@ import { ProviderContext } from "./Context";
 const staticAction = createRef<TStaticControl>();
 
 const Provider = ({children, SPA = false}: TProvider): React.ReactNode => {
-	const modals = useRef<TModals>({});
+	const modals = useRef<TModals>(new Map<string, TPushControll>());
 
 	const modalsRef = useRef<HTMLDivElement>(null);
 
 	const push = (name: string, control: TPushControll) => {
-		modals.current[name] = control;
+		modals.current.set(name, control);
 	};
 
 	const show = (name: string) => {
-		if (name in modals.current) {
-			modals.current[name].show();
+		const modal = modals.current.get(name);
+		if (modal) {
+			modal.show();
 		}
 	};
 	
 	const hide = (name?: string) => {
-		if (name && name in modals.current) {
-			modals.current[name].hide();
+		if (name && modals.current.has(name)) {
+			modals.current.get(name)?.hide();
 		}else{
-			Object.keys(modals.current).forEach(hide);
+			modals.current.forEach((modal) => modal.hide());
 		}
 	};
 
 	const count = (): number => {
-		return Object.values(modals.current).filter((modal) => modal.showStatus.current === true).length;
+		return modals.current.size;
+		// return Object.values(modals.current).filter((modal) => modal.showStatus.current === true).length;
 	};
 
 	const createDynamicContainer = (): HTMLDivElement => {

@@ -16,7 +16,7 @@ import type {
 	TConfig,
 	TShowEvent
 } from "./types";
-import { WhithModalContext } from "./Context";
+import { WithModalContext } from "./Context";
 
 export interface WithModalComponent<ModalProps, ModalState> extends ForwardRefExoticComponent<ModalProps & RefAttributes<ModalProps>>, TModal<ModalProps, ModalState> {
 	setState: (data: ModalState | ((data: ModalState) => ModalState)) => void;
@@ -66,18 +66,19 @@ const withModal = <ModalProps extends {} = {}, ModalState extends {} = {}>(Wrapp
 				setState: setStateData
 			} as TModal<ModalProps>));
 			
-			return(<WhithModalContext.Provider value={{
+			return(<WithModalContext.Provider value={{
 				setConfig,
 				state: stateData,
 				footerRef: modalRef.current?.footerRef,
 				showPopup,
 				show,
-				hide
+				hide,
+				withModal: true
 			}}>
 				<Container name={currentConfig?.name ?? id} title={currentConfig?.title ?? ''} {...currentConfig} ref={modalRef}>
 					<WrappedComponent {...props} ref={ref}/>
 				</Container>
-			</WhithModalContext.Provider>);
+			</WithModalContext.Provider>);
 		}),
 		showPopup,
 		show,

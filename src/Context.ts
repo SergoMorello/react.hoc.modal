@@ -17,7 +17,8 @@ export const ContainerContext = createContext({
 	footer: {} as ReactNode
 });
 
-export const WhithModalContext = createContext<TModalConfigAction<any>>({
+export const WithModalContext = createContext<TModalConfigAction<any>>({
+	withModal: false,
 	setConfig: () => {},
 	state: {},
 	footerRef: null,

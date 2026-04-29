@@ -111,7 +111,7 @@ export type TConfig = {
 
 export type ModalProps = TConfig & {
 
-	name: string;
+	name?: string;
 
 	title: string;
 
@@ -183,9 +183,7 @@ export type TPushControll = TControl & {
 	showStatus: TShowStatus;
 }
 
-export type TModals = {
-	[name: string]: TPushControll;
-}
+export type TModals = Map<string, TPushControll>;
 
 export type TContainerContext = {
 	push(name: string, control: TPushControll): void;
@@ -196,6 +194,7 @@ export type TContainerContext = {
 export type TModalConfigAction<ModalState = {}> = TModal & {
 	setConfig: (config: TConfig) => void;
 	state?: ModalState;
+	withModal?: boolean;
 }
 
 export type TPropsRender = ModalProps & TModal & {}

@@ -6,11 +6,16 @@ import type {
 	TConfig,
 	TModalConfigAction
 } from "./types";
-import { WhithModalContext } from "./Context";
+import { ContainerContext, WithModalContext } from "./Context";
 import { useLayoutEffect } from "./helpers";
 
 const useModal = <ModalState>(config?: TConfig, deps: unknown[] = []): TUseModalControl<ModalState> => {
-	const {setConfig, show, hide, state} = useContext<TModalConfigAction<ModalState>>(WhithModalContext);
+	const {setConfig, show, state, ...withModalContext} = useContext<TModalConfigAction<ModalState>>(WithModalContext);
+	const containerContext = useContext(ContainerContext);
+
+	const hide = () => {
+		withModalContext.withModal ? withModalContext.hide() : containerContext.hide();
+	}
 
 	useLayoutEffect(() => {
 		if (config) setConfig(config);

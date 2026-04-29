@@ -6,7 +6,8 @@ import React, {
 	forwardRef,
 	useImperativeHandle,
 	useMemo,
-	ReactNode
+	ReactNode,
+	useId
 } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -38,6 +39,10 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 		effect = 'scale',
 		onHide
 	} = props;
+
+	const modalId = useId();
+
+	const modalName = useMemo(() => name ?? modalId, [name, modalId]);
 	
 	const containerRef = useRef<HTMLDivElement>(null);
 	const footerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +169,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 
 	useLayoutEffect(() => {
 		if (typeof window === 'undefined') return;
-		providerContext.push(name, {
+		providerContext.push(modalName, {
 			show,
 			hide: _hide,
 			showStatus
