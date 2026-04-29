@@ -38,8 +38,7 @@ const Provider = ({children, SPA = false}: TProvider): React.ReactNode => {
 	};
 
 	const count = (): number => {
-		return modals.current.size;
-		// return Object.values(modals.current).filter((modal) => modal.showStatus.current === true).length;
+		return Array.from(modals.current.values()).filter((modal) => modal.showStatus.current === true).length;
 	};
 
 	const createDynamicContainer = (): HTMLDivElement => {
