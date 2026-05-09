@@ -4,6 +4,8 @@ import {
 	type ReactNode
 } from "react";
 import { ContainerContext } from "./Context";
+import { createPortal } from "react-dom";
+import { useLayoutEffect } from "./helpers";
 
 export interface FooterProps {
 	children: ReactNode;
@@ -11,11 +13,15 @@ export interface FooterProps {
 
 const Footer = ({children}: FooterProps) => {
 	const containerContext = useContext(ContainerContext);
-	useEffect(() => {
+	
+	useLayoutEffect(() => {
 		if (!children) return;
-		containerContext.setFooter(children);
-	}, [children]);
-	return null;
+		containerContext.setFooter('render');
+	}, []);
+
+	if (!containerContext.footerRef.current) return null;
+
+	return createPortal(children, containerContext.footerRef.current!);
 };
 
 export {Footer};

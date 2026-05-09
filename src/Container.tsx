@@ -25,7 +25,7 @@ import { Style, useLayoutEffect } from "./helpers";
 import Modal from "./Components/Modal";
 import BottomSheet from "./Components/BottomSheet";
 import Popup from "./Components/Popup";
-import { ContainerContext } from "./Context";
+import { ContainerContext, FooterMountStatus } from "./Context";
 
 const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const {
@@ -50,7 +50,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 	const initPosition = useRef<DOMRect>();
 	const [isShow, setShow] = useState(false);
 	const [isMobile, setMobile] = useState(false);
-	const [footer, setFooter] = useState<ReactNode>();
+	const [footer, setFooter] = useState<FooterMountStatus>();
 	const providerContext = useContext(ProviderContext);
 	const listeners = useRef({
 		onHide: () => {}
@@ -127,6 +127,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 			viewport.add('interactive-widget', 'resizes-content');
 			requestAnimationFrame(() => containerRef.current?.classList.add(styles['active'], 'active'));
 	 	}else{
+			setFooter(undefined);
 			viewport.remove('interactive-widget');
 			onHide?.();
 		}
@@ -140,6 +141,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 
 	useEffect(() => {
 		return () => {
+			setFooter(undefined);
 			showStatus.current = false;
 			blockScroll(false);
 		}
@@ -213,6 +215,7 @@ const Container = forwardRef<TModal, ModalProps>((props, ref) => {
 			<ContainerContext.Provider value={{
 				initPosition,
 				footer,
+				footerRef,
 				listeners,
 				setFooter,
 				hide

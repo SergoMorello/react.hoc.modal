@@ -1,5 +1,5 @@
 import { forwardRef, TouchEvent, UIEvent, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Style } from "../../helpers";
+import { Style, useLayoutEffect } from "../../helpers";
 import { ModalProps, TPropsRender } from "../../types";
 import styles from "./style.module.scss";
 import { ContainerContext } from "../../Context";
@@ -152,6 +152,11 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: hide
 	useEffect(() => {
 		containerContext.listeners.current.onHide = hideBottomSheet;
 	}, []);
+
+	useLayoutEffect(() => {
+		if (!containerContext.footer) return;
+		containerContext.setFooter('mount');
+	}, [containerContext.footer]);
 	
 	return(<>
 		<div className={Style('background')} onClick={hide}/>
@@ -187,10 +192,11 @@ export const BottomSheet = ({onBackground, onClose, renderProps, ...props}: hide
 					</ContentScroll>
 					{containerContext.footer ? <footer
 						className={Styles('footer')}
+						ref={renderProps.footerRef}
 						style={{
 							transform: `translateY(-${positionFooter}px)`
 						}}
-					>{containerContext.footer}</footer> : null}
+					/> : null}
 				</div>
 			}
 		</dialog>

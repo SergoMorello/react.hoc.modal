@@ -2,10 +2,11 @@ import {
 	type MouseEvent,
 	type TouchEvent,
 	useContext,
+	useEffect,
 	useRef,
 	useState
 } from "react";
-import { Style } from "../../helpers";
+import { Style, useLayoutEffect } from "../../helpers";
 import { ModalProps, TPropsRender } from "../../types";
 import { ContainerContext } from "../../Context";
 import ContentScroll from "../ContentScroll";
@@ -111,6 +112,11 @@ export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 		setPosition({ x: clampedX, y: clampedY });
 	};
 
+	useLayoutEffect(() => {
+		if (!containerContext.footer) return;
+		containerContext.setFooter('mount');
+	}, [containerContext.footer]);
+
 	return(<div
 		className={Styles('modal-wrapper')}
 		onMouseDown={handleMoveStart}
@@ -161,7 +167,6 @@ export const Modal = ({onBackground, onClose, renderProps, ...props}: DefaultMod
 					containerContext.footer ? <footer
 						className={Styles('footer')}
 						ref={renderProps.footerRef}
-						children={containerContext.footer}
 					/> : null		
 					}
 				</div>
